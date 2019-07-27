@@ -1,0 +1,23 @@
+{
+    "name": "drdhnrq/php-applied-statistics",
+    "description": "This is a project to develop an applied statistic library that can be used to apply the mathematical calculation of probabilities.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eduardo Henrique de Sousa Silva",
+            "email": "dev.eduardohenrique@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.2.20"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "drdhnrq\\PhpAppliedStatistics\\": "src/"
+        }
+    }
+}
