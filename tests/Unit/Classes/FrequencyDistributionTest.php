@@ -179,60 +179,66 @@ class FrequencyDistributionTest extends TestCase
 
     /*********************************************************************************
      *
-     * Instanciate Class
+     * Tests INSTANCE CLASS
      *
     *********************************************************************************/
 
     /**
-     * This test verifies if the decimal places is defined the value of
-     * constant DEFAULT_DECIMAL_PLACES when the class FrequencyDistribution
-     * is instance without pass default places argument
+     * This test will verify if the class is using the default decimal places
+     * constant when the class instance doesn't provide the decimal places argument
+     * @return void
      */
-    // public function testExpetedInstanceClassUseConstantDefaultDecimalPlaces()
-    // {
-    //     $frequencyDistribution = new FrequencyDistribution();
-    //     $this->assertEquals(5, $frequencyDistribution->decimalPlaces);
-    // }
+    public function testExpectedClassUseDecimalPlacesConstant(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution();
+        $this->assertEquals(
+            5,
+            $frequencyDistribution->decimalPlaces,
+            'The class was instanced none argument decimal places but it doesn\'t using the default decimal places constant'
+        );
+    }
 
     /**
-     * This test verifies if de decimal places is defined with the value that
-     * was passed as argument to instantiate the class
+     * This test will verify if the class is using the value of the decimal
+     * place that was provided when the class was instantiated
+     * @return void
      */
-    // public function testExpectedInstanceClassUseDecimalPlacesPassedAsArgumentConstructor()
-    // {
-    //     $frequencyDistribution = new FrequencyDistribution([], 3);
-    //     $this->assertEquals(3, $frequencyDistribution->decimalPlaces);
+    public function testExpectedClassUseTheDecimalPlacesArgumentProvided(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution([], 3);
+        $this->assertEquals(3, $frequencyDistribution->decimalPlaces);
 
-
-    //     $frequencyDistribution = new FrequencyDistribution([], 1);
-    //     $this->assertEquals(1, $frequencyDistribution->decimalPlaces);
-    // }
+        $frequencyDistribution = new FrequencyDistribution([], 1);
+        $this->assertEquals(1, $frequencyDistribution->decimalPlaces);
+    }
 
     /**
-     * this test verfies if the data property is empty when the data
-     * argument isnt passed in the constructor
+     * This test will verify if the data property is empty when the data
+     * argument wasn't provided to instantiate the class
+     * @return void
      */
-    // public function testExpectedDataIsEmptyIfClassInstanceWithouPassData()
-    // {
-    //     $frequencyDistribution = new FrequencyDistribution();
-    //     $this->assertEmpty($frequencyDistribution->data);
-    // }
+    public function testExpectedDataEmptyWhenDataArentProvided(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution();
+        $this->assertEmpty($frequencyDistribution->data);
+    }
 
     /**
-     * This test verifies if the data is being defined whent it is passed
-     * as argument constructor in the class
+     * This test will verify if the data property isn't empty when the data
+     * argument was provided to instantiate the class
+     * @return void
      */
-    // public function testExpectedDataIsnotEmptyIfClassInstanceWithArgumentData()
-    // {
-    //     $frequencyDistribution = new FrequencyDistribution([1, 3, 2]);
-    //     $this->assertNotEmpty($frequencyDistribution->data);
-    //     $this->assertContains(1, $frequencyDistribution->data);
-    //     $this->assertContains(2, $frequencyDistribution->data);
-    // }
+    public function testExpectedDataisntEmptyWhenDataArentProvided(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution([1, 3, 2]);
+        $this->assertNotEmpty($frequencyDistribution->data);
+        $this->assertContains(1, $frequencyDistribution->data);
+        $this->assertContains(2, $frequencyDistribution->data);
+    }
 
     /*********************************************************************************
      *
-     * Test Class Methods
+     * Test CLASS METHODS
      *
     *********************************************************************************/
 
