@@ -243,43 +243,40 @@ class FrequencyDistributionTest extends TestCase
     *********************************************************************************/
 
     /**
-     * This test expected that the data of the class will be ordered crescent shape
-     * (sortData)
-     */
-    // public function testExpectedDataOrderedWhenCallSortDataMethod()
-    // {
-    //     $defectiveParts = DataProvider::defectiveParts();
-    //     $frequencyDistribution =  new FrequencyDistribution($defectiveParts);
-    //     $this->assertCount(30, $frequencyDistribution->data);
-
-    //     $frequencyDistribution->sortData();
-    //     $this->assertEquals(1, $frequencyDistribution->data[0]);
-    //     $this->assertEquals(2, $frequencyDistribution->data[1]);
-    //     $this->assertEquals(3, $frequencyDistribution->data[2]);
-    //     $this->assertEquals(4, $frequencyDistribution->data[3]);
-    //     $this->assertEquals(15, $frequencyDistribution->data[4]);
-    // }
-
-    /**
-     * This test verifies if the variables were set when the method setFrequencyVariables
-     * is called, its expected that the variables to be setted
-     * (setFrequencyVariables)
-     *
+     * This test will verify if the data are being ordered when the method sortData is called.
      * @return void
      */
-    // public function testExpectedFrequencyVariablesDefinedWhenCallSetVariablesMethod()
-    // {
-    //     $frequencyDistribution =  new FrequencyDistribution([4, 1, 3, 2, 3, 4, 4, 1]);
-    //     $this->assertCount(8, $frequencyDistribution->data);
+    public function testExpectedOrderedDataWhenSortDataMethodIsCalled(): void
+    {
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution =  new FrequencyDistribution($defectiveParts['data']);
+        $this->assertCount(30, $frequencyDistribution->data);
 
-    //     $frequencyDistribution->setFrequencyVariables();
+        $dataOrdered = $frequencyDistribution->sortData();
 
-    //     $this->assertCount(4, $frequencyDistribution->frequencies);
-    //     $this->assertEquals(1, $frequencyDistribution->frequencies[1]->variable);
-    //     $this->assertEquals(2, $frequencyDistribution->frequencies[2]->variable);
-    //     $this->assertEquals(3, $frequencyDistribution->frequencies[3]->variable);
-    //     $this->assertEquals(4, $frequencyDistribution->frequencies[4]->variable);
-    // }
+        $this->assertEquals($defectiveParts['ordered'], $dataOrdered);
+        $this->assertEquals(0, $dataOrdered[0]);
+        $this->assertEquals(1, $dataOrdered[14]);
+        $this->assertEquals(2, $dataOrdered[25]);
+    }
+
+    /**
+     * This test will verify if the variables that the data contains are being
+     * defined when the method setVariablesFrequency is called
+     * @return void
+     */
+    public function testExpectedSetVariablesWhenSetVariablesFrequencyMethodIsCalled(): void
+    {
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+
+        $frequencies = $frequencyDistribution->setVariablesFrequency();
+
+        $this->assertCount(3, $frequencies);
+        $this->assertEquals(2, $frequencies[0]->variable);
+        $this->assertEquals(1, $frequencies[1]->variable);
+        $this->assertEquals(0, $frequencies[3]->variable);
+    }
 
     /**
      * This test verifies if the frequencies were set when the method setFrequencies

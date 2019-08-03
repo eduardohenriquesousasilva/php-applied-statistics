@@ -62,11 +62,12 @@ class FrequencyDistribution
      * This method will order in the data that are being analyzed, this way
      * the frequency distribution will be in crescent order
      *
-     * @return boolean
+     * @return array
      */
-    public function sortData(): bool
+    public function sortData(): array
     {
-        return sort($this->data);
+        sort($this->data);
+        return $this->data;
     }
 
     /**
@@ -79,11 +80,17 @@ class FrequencyDistribution
      */
     public function setVariablesFrequency(): array
     {
+        $variables = [];
         foreach ($this->data as $variable) {
-            if (!isset($this->frequencies[$variable])) {
-                $this->frequencies[$variable] = new StdClass();
-                $this->frequencies[$variable]->variable = $variable;
+            if (!in_array($variable, $variables)) {
+                array_push($variables, $variable);
             }
+        }
+
+        foreach ($variables as $index => $variable) {
+            $object = new StdClass();
+            $object->variable = $variable;
+            $this->frequencies[$index] = $object;
         }
 
         return $this->frequencies;
