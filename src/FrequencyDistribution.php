@@ -4,6 +4,7 @@ namespace drdhnrq\PhpAppliedStatistics;
 
 use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
+use drdhnrq\PhpAppliedStatistics\Exceptions\FrequencyNotDefined;
 
 class FrequencyDistribution
 {
@@ -51,7 +52,7 @@ class FrequencyDistribution
     public function __construct(array $data = [], int $decimalPlaces = null)
     {
         $this->data = $data;
-        $this->frequency = array();
+        $this->frequencies = array();
 
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
@@ -80,17 +81,10 @@ class FrequencyDistribution
      */
     public function setVariablesFrequency(): array
     {
-        $variables = [];
-        foreach ($this->data as $variable) {
-            if (!in_array($variable, $variables)) {
-                array_push($variables, $variable);
-            }
-        }
-
-        foreach ($variables as $index => $variable) {
+        foreach (array_unique($this->data) as $variable) {
             $object = new StdClass();
             $object->variable = $variable;
-            $this->frequencies[$index] = $object;
+            $this->frequencies[$variable] = $object;
         }
 
         return $this->frequencies;
@@ -107,16 +101,8 @@ class FrequencyDistribution
      */
     public function setFrequencies(): array
     {
-        foreach ($this->data as $variable) {
-            if (!isset($this->frequencies[$variable])) {
-                $this->frequencies[$variable] = new StdClass();
-            }
-
-            if (!isset($this->frequencies[$variable]->frequency)) {
-                $this->frequencies[$variable]->frequency = 0;
-            }
-
-            $this->frequencies[$variable]->frequency++;
+        foreach (array_count_values($this->data) as $variable => $frequency) {
+            $this->frequencies[$variable]->frequency = $frequency;
         }
 
         return $this->frequencies;
@@ -132,6 +118,11 @@ class FrequencyDistribution
      */
     public function setRelativeFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->frequency)) {
+            throw new FrequencyNotDefined('The frequency wasn\'t defined, the relative frequency needs the frequency to be calculated');
+        }
+
         $totalData = count($this->data);
         foreach ($this->frequencies as $row) {
             $relativefrequency = $row->frequency / $totalData;

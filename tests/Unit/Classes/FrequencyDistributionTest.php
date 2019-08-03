@@ -4,6 +4,7 @@ include __DIR__ . '../../../Data/DataProvider.php';
 
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\FrequencyDistribution;
+use drdhnrq\PhpAppliedStatistics\Exceptions\FrequencyNotDefined;
 
 class FrequencyDistributionTest extends TestCase
 {
@@ -250,10 +251,9 @@ class FrequencyDistributionTest extends TestCase
     {
         $defectiveParts = DataProvider::defectiveParts();
         $frequencyDistribution =  new FrequencyDistribution($defectiveParts['data']);
-        $this->assertCount(30, $frequencyDistribution->data);
-
         $dataOrdered = $frequencyDistribution->sortData();
 
+        $this->assertCount(30, $frequencyDistribution->data);
         $this->assertEquals($defectiveParts['ordered'], $dataOrdered);
         $this->assertEquals(0, $dataOrdered[0]);
         $this->assertEquals(1, $dataOrdered[14]);
@@ -265,40 +265,69 @@ class FrequencyDistributionTest extends TestCase
      * defined when the method setVariablesFrequency is called
      * @return void
      */
-    public function testExpectedSetVariablesWhenSetVariablesFrequencyMethodIsCalled(): void
+    public function testExpectedSetVariablesWhenMethodIsCalled(): void
+    {
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+        $frequencies = $frequencyDistribution->setVariablesFrequency();
+
+        $this->assertCount(3, $frequencies);
+        $this->assertEquals(0, $frequencies[0]->variable);
+        $this->assertEquals(1, $frequencies[1]->variable);
+        $this->assertEquals(2, $frequencies[2]->variable);
+    }
+
+    /**
+     * This test will verify if the frequencies of the variables are being
+     * defined when the method setFrequencies is called
+     * @return void
+     */
+    public function testExpectedSetFrequenciesWhenMethodIsCalled(): void
     {
         $defectiveParts = DataProvider::defectiveParts();
         $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
 
-        $frequencies = $frequencyDistribution->setVariablesFrequency();
+        $frequencyDistribution->setVariablesFrequency();
+        $frequencies = $frequencyDistribution->setFrequencies();
 
         $this->assertCount(3, $frequencies);
-        $this->assertEquals(2, $frequencies[0]->variable);
-        $this->assertEquals(1, $frequencies[1]->variable);
-        $this->assertEquals(0, $frequencies[3]->variable);
+        $this->assertEquals(5, $frequencies[2]->frequency);
+        $this->assertEquals(11, $frequencies[1]->frequency);
+        $this->assertEquals(14, $frequencies[0]->frequency);
     }
 
     /**
-     * This test verifies if the frequencies were set when the method setFrequencies
-     * is called, its expetected that the frequencies to be setted
-     * (setFrequencies)
+     * This test will verify if the frequencies of the variables are being
+     * defined when the method setRelativeFrequencies is called
+     * @return void
+     */
+    public function testExpectedSetRelativeFrequenciesWhenMethodIsCalled(): void
+    {
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data'], 4);
+
+        $frequencyDistribution->setVariablesFrequency();
+        $frequencyDistribution->setFrequencies();
+        $frequencies = $frequencyDistribution->setRelativeFrequencies();
+
+        $this->assertCount(3, $frequencies);
+        $this->assertEquals(0.1667, $frequencies[2]->relativeFrequency);
+        $this->assertEquals(0.3667, $frequencies[1]->relativeFrequency);
+        $this->assertEquals(0.4667, $frequencies[0]->relativeFrequency);
+    }
+
+    /**
+     * This test verifies if the exception FrequencyNotDefine happen when the
+     * method set relative frequency is called before to define the frequencies
      *
      * @return void
      */
-    // public function testExpectedFrequencyDefinedWhenCallSetFrequenciesMethod()
-    // {
-    //     $frequencyDistribution =  new FrequencyDistribution([15, 4, 1, 3, 2, 3, 4, 4, 1]);
-    //     $this->assertCount(9, $frequencyDistribution->data);
+    public function testExcpectedExceptionFrequencyNotDefinedWhenSetRelativeFrequencyisCalled(): void
+    {
+        $this->expectException(FrequencyNotDefined::class);
 
-
-    //     $frequencyDistribution->setFrequencies();
-
-    //     $this->assertCount(5, $frequencyDistribution->frequencies);
-
-    //     $this->assertEquals(2, $frequencyDistribution->frequencies[1]->frequency);
-    //     $this->assertEquals(1, $frequencyDistribution->frequencies[2]->frequency);
-    //     $this->assertEquals(2, $frequencyDistribution->frequencies[3]->frequency);
-    //     $this->assertEquals(3, $frequencyDistribution->frequencies[4]->frequency);
-    //     $this->assertEquals(1, $frequencyDistribution->frequencies[15]->frequency);
-    // }
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+        $frequencyDistribution->setRelativeFrequencies();
+    }
 }
