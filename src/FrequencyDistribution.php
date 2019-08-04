@@ -4,7 +4,12 @@ namespace drdhnrq\PhpAppliedStatistics;
 
 use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
+use drdhnrq\PhpAppliedStatistics\Exceptions\VariableNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\FrequencyNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulateRelativeFrequency;
+use drdhnrq\PhpAppliedStatistics\Exceptions\RelativeFrequencyNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulatePercentRelativeFrequency;
+use drdhnrq\PhpAppliedStatistics\Exceptions\PercentRelativeFrequencyNotDefined;
 
 class FrequencyDistribution
 {
@@ -43,6 +48,14 @@ class FrequencyDistribution
     public $frequencies;
 
     /**
+     * This property contains the totals of the frequency distribution, and
+     * will show this information as a row totalizing
+     *
+     * @var StdClass;
+     */
+    public $totals;
+
+    /**
      * All arguments are optional, but in a moment they are necessary to
      * calculate the statistics operations.
      *
@@ -53,6 +66,7 @@ class FrequencyDistribution
     {
         $this->data = $data;
         $this->frequencies = array();
+        $this->totals = new StdClass();
 
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
@@ -101,6 +115,11 @@ class FrequencyDistribution
      */
     public function setFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->variable)) {
+            throw new VariableNotDefined();
+        }
+
         foreach (array_count_values($this->data) as $variable => $frequency) {
             $this->frequencies[$variable]->frequency = $frequency;
         }
@@ -120,7 +139,7 @@ class FrequencyDistribution
     {
         $firstElementArray = array_values($this->frequencies)[0];
         if (!isset($firstElementArray->frequency)) {
-            throw new FrequencyNotDefined('The frequency wasn\'t defined, the relative frequency needs the frequency to be calculated');
+            throw new FrequencyNotDefined();
         }
 
         $totalData = count($this->data);
@@ -142,6 +161,10 @@ class FrequencyDistribution
      */
     public function setPercentRelativeFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->relativeFrequency)) {
+            throw new RelativeFrequencyNotDefined();
+        }
 
         foreach ($this->frequencies as $row) {
             $percentRelativeFrequency = $row->relativeFrequency * 100;
@@ -161,6 +184,11 @@ class FrequencyDistribution
      */
     public function setAccumulateFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->frequency)) {
+            throw new FrequencyNotDefined();
+        }
+
         $carry = 0;
         foreach ($this->frequencies as $row) {
             $row->accumulateFrequency = $carry += $row->frequency;
@@ -179,11 +207,16 @@ class FrequencyDistribution
      */
     public function setAccumulateRelativeFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->relativeFrequency)) {
+            throw new RelativeFrequencyNotDefined();
+        }
+
         $carry = 0;
         foreach ($this->frequencies as $row) {
             $row->accumulateRelativeFrequency = $carry += $row->relativeFrequency;
         }
-        end($this->frequencies)->accumulateRelativeFrequency = $this->round($carry, 0);
+
         return $this->frequencies;
     }
 
@@ -198,11 +231,49 @@ class FrequencyDistribution
      */
     public function setPercentAccumulateRelativeFrequencies(): array
     {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->percentRelativeFrequency)) {
+            throw new PercentRelativeFrequencyNotDefined();
+        }
+
         $carry = 0;
         foreach ($this->frequencies as $row) {
             $row->accumulatePercentRelativeFrequency = $carry += $row->percentRelativeFrequency;
         }
-        end($this->frequencies)->accumulatePercentRelativeFrequency = $this->round($carry, 0);
+
         return $this->frequencies;
+    }
+
+    /**
+     * This method will set the totals that were got after  the calculations of
+     * frequency distribution
+     *
+     * @return StdClass
+     */
+    public function setTotals(): StdClass
+    {
+        $firstElementArray = array_values($this->frequencies)[0];
+
+        if (!isset($firstElementArray->accumulateRelativeFrequency)) {
+            throw new AccumulateRelativeFrequency();
+        }
+
+        if (!isset($firstElementArray->accumulatePercentRelativeFrequency)) {
+            throw new AccumulatePercentRelativeFrequency();
+        }
+
+        $this->totals->frequency = count($this->data);
+
+        $this->totals->relativeFrequency = $this->round(
+            end($this->frequencies)->accumulateRelativeFrequency,
+            $this->decimalPlaces
+        );
+
+        $this->totals->percentRelativeFrequency = $this->round(
+            end($this->frequencies)->accumulatePercentRelativeFrequency,
+            $this->decimalPlaces
+        );
+
+        return $this->totals;
     }
 }

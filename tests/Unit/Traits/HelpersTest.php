@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 
-
 class HelpersTest extends TestCase
 {
     /**
