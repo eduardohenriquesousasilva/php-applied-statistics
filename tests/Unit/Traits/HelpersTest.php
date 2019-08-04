@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 
-
 class HelpersTest extends TestCase
 {
     /**
@@ -12,21 +11,6 @@ class HelpersTest extends TestCase
     private function getMockTrait()
     {
         return $this->getMockForTrait(Helpers::class);
-    }
-
-    /**
-     * This method verifies if the property decimalPlaces exists
-     * in the Trait file
-     *
-     * @return void
-     */
-    public function testExpectedThatDecimalPlacesProtectedExists()
-    {
-        $mockTrait =  $this->getMockTrait();
-        $this->assertTrue(
-            property_exists($mockTrait, 'decimalPlaces'),
-            'The Trait Helpers not have property decimalPlaces'
-        );
     }
 
     /**
@@ -58,19 +42,18 @@ class HelpersTest extends TestCase
     }
 
     /**
-     * This test verifies if the round method is using the default decimal
-     * places declared in the trait to round the numbers when the decimal
-     * places wasnt passed as argument method
+     * This test verifies if the round method doesnt round the value when
+     * it doesnt receive the argument decimal places
      *
      * @return void
      */
-    public function testExpectedThatRoundMethodUsesDefaultDecimalPlaces()
+    public function testExpectedRoundMethodDoesntRounValueWhenDoesntReceiveDecimalPlaces()
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
 
         $this->assertEquals(1.4515, $mockTrait->round(1.4515));
-        $this->assertEquals(1.4516, $mockTrait->round(1.45155));
-        $this->assertEquals(1.4515, $mockTrait->round(1.45151));
+        $this->assertEquals(1.45155, $mockTrait->round(1.45155));
+        $this->assertEquals(1.45151, $mockTrait->round(1.45151));
     }
 
     /**
@@ -83,30 +66,20 @@ class HelpersTest extends TestCase
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
 
-        $this->assertEquals(1.453, $mockTrait->round(1.4534, 3));
-        $this->assertEquals(1.43, $mockTrait->round(1.434, 2));
-        $this->assertEquals(1.5, $mockTrait->round(1.4534, 1));
-        $this->assertEquals(1.0, $mockTrait->round(1.434, 0));
+        $this->assertEquals(300, $mockTrait->round(300.32, 0));
+        $this->assertEquals(404, $mockTrait->round(403.6440, 0));
+        $this->assertEquals(35.3, $mockTrait->round(35.32216, 1));
+        $this->assertEquals(456.5, $mockTrait->round(456.541, 1));
+        $this->assertEquals(2303.9, $mockTrait->round(2303.8714, 1));
+        $this->assertEquals(23.46, $mockTrait->round(23.4585, 2));
+        $this->assertEquals(171.29, $mockTrait->round(171.29401, 2));
+        $this->assertEquals(15.216, $mockTrait->round(15.21622, 3));
+        $this->assertEquals(603.823, $mockTrait->round(603.822714, 3));
     }
 
     /**
      * This method verifies if the calcPercent method is calculating the amount
-     * right and if it is using the default decimal places to return the result
-     * of calculation
-     */
-    public function testExpectedCalcPercentMethodUsesDefaultDecimalPlaces()
-    {
-        $mockTrait = $this->getMockForTrait(Helpers::class);
-
-        $this->assertEquals(10, $mockTrait->calcPercent(100, 10));
-        $this->assertEquals(11.685, $mockTrait->calcPercent(123, 9.5));
-        $this->assertEquals(19.2044, $mockTrait->calcPercent(1243, 1.545));
-    }
-
-    /**
-     * This method verifies if the calcPercent method is calculating the amount
-     * right and if it is using de decimal places to return the result with the
-     * limit decimal places passed as argument in the method
+     * right
      *
      * @return void
      */
@@ -114,7 +87,12 @@ class HelpersTest extends TestCase
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
 
-        $this->assertEquals(11.69, $mockTrait->calcPercent(123, 9.5, 2));
-        $this->assertEquals(19.2, $mockTrait->calcPercent(1243, 1.545, 1));
+        $this->assertEquals(3690.00, $mockTrait->calcPercent(24600.00, 15));
+        $this->assertEquals(14670.00, $mockTrait->calcPercent(244500.00, 6));
+        $this->assertEquals(547.2, $mockTrait->calcPercent(5700.00, 9.6));
+        $this->assertEquals(42, $mockTrait->calcPercent(600, 7));
+        $this->assertEquals(1305.1, $mockTrait->calcPercent(6200, 21.05));
+        $this->assertEquals(11.685, $mockTrait->calcPercent(123, 9.5));
+        $this->assertEquals(19.204349999999998, $mockTrait->calcPercent(1243, 1.545, 1));
     }
 }

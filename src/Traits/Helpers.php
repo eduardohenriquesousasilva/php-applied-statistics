@@ -13,49 +13,37 @@ namespace drdhnrq\PhpAppliedStatistics\Traits;
 trait Helpers
 {
     /**
-     * Default decimal places
-     *
-     * @var integer
-     */
-    public $decimalPlaces = 4;
-
-    /**
      * Round numbers
      *
      * The decimal places is optional argument, if it wasnt
-     * informed the decimal places will to be the default
-     * decimal places declared in the trait
+     * informed the decimal places the value will be returned
+     * as a float number without rounded
      *
      * @param float $number
-     * @param integer $decimalPlaces
+     * @param integer|null $decimalPlaces
      *
      * @return float
      */
     public function round(float $number, $decimalPlaces = null): float
     {
-        $decimalPlaces = is_null($decimalPlaces)
-            ? $this->decimalPlaces
-            : $decimalPlaces;
-
-        return floatval(round($number, $decimalPlaces));
+        return is_null($decimalPlaces)
+            ?  floatval($number)
+            :  floatval(round($number, $decimalPlaces));
     }
 
     /**
      * Calculate the percent
      *
      * This method will calculate the percent value, using the amount and percent
-     * passed as arguments of method, if the decimal places is passed as argument too
-     * they will be used to format the result
+     * passed as arguments of method
      *
      * @param integer|float $amount
      * @param integer|float $percent
-     * @param integer $decimalPlaces
      *
      * @return float
      */
     public function calcPercent($amount, $percent, $decimalPlaces = null): float
     {
-        $result = ($amount / 100) * $percent;
-        return $this->round($result, $decimalPlaces);
+        return ($amount / 100) * $percent;
     }
 }
