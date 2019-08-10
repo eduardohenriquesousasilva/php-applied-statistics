@@ -8,6 +8,7 @@ use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsnotOrdered;
 use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
 
 class QuantitativeVariables extends FrequencyDistribution
 {
@@ -43,14 +44,12 @@ class QuantitativeVariables extends FrequencyDistribution
      * This property will have the definitions of classes breaks that were
      * defined to calculate de frequency distribution
      *
-     * @var StdClass
+     * @var array
      */
     public $classBreaks;
 
     public function __construct(array $data = [], int $decimalPlaces = null)
     {
-        $this->classBreaks = new StdClass();
-
         parent::__construct($data, $decimalPlaces);
     }
 
@@ -125,5 +124,55 @@ class QuantitativeVariables extends FrequencyDistribution
             ($this->breadthSample / $this->classNumber),
             $this->decimalPlaces
         );
+    }
+
+    /**
+     * This method will defined the class breaks, they are
+     * used to calculate and to define the frequencies when the
+     * quantitative variables are a many data variations
+     *
+     * @return array
+     */
+    public function setClassBreaks(): array
+    {
+        if (!$this->data) {
+            throw new DataIsEmpty();
+        }
+
+        $cloneDataSorted = $this->data;
+        sort($cloneDataSorted);
+
+        if ($this->data !== $cloneDataSorted) {
+            throw new DataIsnotOrdered();
+        }
+
+        if (is_null($this->classNumber)) {
+            throw new ClassNumberIsNotDefined();
+        }
+
+        if (is_null($this->intervalClass)) {
+            throw new IntervalClassIsNotDefined();
+        }
+
+        $lessLimitClass = $this->data[0];
+        $upperLimitClass = 0;
+        $classNumber = 0;
+
+        do {
+            $classNumber++;
+            $upperLimitClass = ($lessLimitClass + $this->intervalClass);
+
+            $this->classBreaks[$classNumber] = (object) [
+                'lessLimit' => $lessLimitClass,
+                'upperLimit' => $upperLimitClass,
+                'description' => $lessLimitClass . ' |-- ' . $upperLimitClass,
+                'class' => $classNumber,
+            ];
+
+            $lessLimitClass = $upperLimitClass;
+
+        } while ($classNumber < $this->classNumber);
+
+        return $this->classBreaks;
     }
 }

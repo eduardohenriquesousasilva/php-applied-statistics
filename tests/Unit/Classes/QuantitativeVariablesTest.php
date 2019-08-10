@@ -2,12 +2,14 @@
 
 require_once __DIR__ . '../../../Data/DataProvider.php';
 
+use StdClass;
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\QuantitativeVariables;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsnotOrdered;
 use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
 
 class QuantitativeVariablesTest extends TestCase
 {
@@ -111,6 +113,19 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertTrue(
             method_exists($quantitativeVariables, 'setIntervalClass'),
             'The setIntervalClass method doesn\'t exist in the class QuantitativeVariables'
+        );
+    }
+
+    /**
+     * This test will verify if the setClassBreaks property exists in this class
+     * @return void
+     */
+    public function testExpectedExistMethodSetClassBreaks(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $this->assertTrue(
+            method_exists($quantitativeVariables, 'setClassBreaks'),
+            'The setClassBreaks method doesn\'t exist in the class QuantitativeVariables'
         );
     }
 
@@ -227,5 +242,104 @@ class QuantitativeVariablesTest extends TestCase
         $quantitativeVariables->sortData();
         $quantitativeVariables->setBreadthSample();
         $quantitativeVariables->setIntervalClass();
+    }
+
+    /**
+     * This test verifies if the classBreaks is defined when the method
+     * setClassBreaks() is called
+     * @return void
+     */
+    public function testExpectedClassBreaksDefinedWhenMethodIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data'], 0);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+
+        $quantitativeVariables->intervalClass = 130.00;
+        $classBreaks = $quantitativeVariables->setClassBreaks();
+
+        $this->assertCount(7, $classBreaks);
+        $this->assertArrayNotHasKey(0, $classBreaks);
+        $this->assertArrayHasKey(1, $classBreaks);
+        $this->assertArrayHasKey(7, $classBreaks);
+
+        $expected = (object) [
+            'lessLimit' => 950.0,
+            'upperLimit' => 1080.0,
+            'description' => "950 |-- 1080",
+            'class' => 1,
+        ];
+        $this->assertContainsEquals($expected, $classBreaks);
+
+        $expected = (object) [
+            'lessLimit' => 1340.0,
+            'upperLimit' => 1470.0,
+            'description' => "1340 |-- 1470",
+            'class' => 4,
+        ];
+        $this->assertContainsEquals($expected, $classBreaks);
+
+        $expected = (object) [
+            'lessLimit' => 1730.0,
+            'upperLimit' => 1860.0,
+            'description' => "1730 |-- 1860",
+            'class' => 7,
+        ];
+        $this->assertContainsEquals($expected, $classBreaks);
+    }
+
+    /**
+     * This test verifies if the excepetion DataIsEmpty when the method
+     * setClassBreaks() is called and the data wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetClassBreakIsCalledAndDataIsEmpty(): void
+    {
+        $this->expectException(DataIsEmpty::class);
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->setClassBreaks();
+    }
+
+    /**
+     * This test verifies if the excepetion DataIsnotOrdered when the method
+     * setClassBreaks() is called and the data wasn't ordered
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetClassBreakIsCalledAndDataIsnotOrdered(): void
+    {
+        $this->expectException(DataIsnotOrdered::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->setClassBreaks();
+    }
+
+    /**
+     * This test verifies if the excepetion ClassNumberIsNotDefined when the method
+     * setClassBreaks() is called and the class number wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetClassBreakIsCalledAndClassNumberIsnotDefined(): void
+    {
+        $this->expectException(ClassNumberIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setClassBreaks();
+    }
+
+    /**
+     * This test verifies if the excepetion IntervalClassIsNotDefined when the method
+     * setClassBreaks() is called and the interval class wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetClassBreakIsCalledAndIntervalClassIsnotDefined(): void
+    {
+        $this->expectException(IntervalClassIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setClassBreaks();
     }
 }
