@@ -4,16 +4,11 @@ namespace drdhnrq\PhpAppliedStatistics;
 
 use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
-use drdhnrq\PhpAppliedStatistics\Exceptions\VariableNotDefined;
-use drdhnrq\PhpAppliedStatistics\Exceptions\FrequencyNotDefined;
-use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulateRelativeFrequency;
-use drdhnrq\PhpAppliedStatistics\Exceptions\RelativeFrequencyNotDefined;
-use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulatePercentRelativeFrequency;
-use drdhnrq\PhpAppliedStatistics\Exceptions\PercentRelativeFrequencyNotDefined;
+use drdhnrq\PhpAppliedStatistics\Traits\ValidationRequirements;
 
 class FrequencyDistribution
 {
-    use Helpers;
+    use Helpers, ValidationRequirements;
 
     /**
      * This constant defines the number of decimal places will be used when the
@@ -81,6 +76,8 @@ class FrequencyDistribution
      */
     public function sortData(): array
     {
+        $this->validationRequirements(['data']);
+
         sort($this->data);
         return $this->data;
     }
@@ -95,6 +92,8 @@ class FrequencyDistribution
      */
     public function setVariablesFrequency(): array
     {
+        $this->validationRequirements(['data']);
+
         foreach (array_unique($this->data) as $variable) {
             $object = new StdClass();
             $object->variable = $variable;
@@ -115,10 +114,7 @@ class FrequencyDistribution
      */
     public function setFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->variable)) {
-            throw new VariableNotDefined();
-        }
+        $this->validationRequirements(['variables']);
 
         foreach (array_count_values($this->data) as $variable => $frequency) {
             $this->frequencies[$variable]->frequency = $frequency;
@@ -137,10 +133,7 @@ class FrequencyDistribution
      */
     public function setRelativeFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->frequency)) {
-            throw new FrequencyNotDefined();
-        }
+        $this->validationRequirements(['frequency']);
 
         $totalData = count($this->data);
         foreach ($this->frequencies as $row) {
@@ -161,10 +154,7 @@ class FrequencyDistribution
      */
     public function setPercentRelativeFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->relativeFrequency)) {
-            throw new RelativeFrequencyNotDefined();
-        }
+        $this->validationRequirements(['relativefrequency']);
 
         foreach ($this->frequencies as $row) {
             $percentRelativeFrequency = $row->relativeFrequency * 100;
@@ -184,10 +174,7 @@ class FrequencyDistribution
      */
     public function setAccumulateFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->frequency)) {
-            throw new FrequencyNotDefined();
-        }
+        $this->validationRequirements(['frequency']);
 
         $carry = 0;
         foreach ($this->frequencies as $row) {
@@ -207,10 +194,7 @@ class FrequencyDistribution
      */
     public function setAccumulateRelativeFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->relativeFrequency)) {
-            throw new RelativeFrequencyNotDefined();
-        }
+        $this->validationRequirements(['relativeFrequency']);
 
         $carry = 0;
         foreach ($this->frequencies as $row) {
@@ -231,10 +215,7 @@ class FrequencyDistribution
      */
     public function setPercentAccumulateRelativeFrequencies(): array
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-        if (!isset($firstElementArray->percentRelativeFrequency)) {
-            throw new PercentRelativeFrequencyNotDefined();
-        }
+        $this->validationRequirements(['percentRelativeFrequency']);
 
         $carry = 0;
         foreach ($this->frequencies as $row) {
@@ -252,15 +233,10 @@ class FrequencyDistribution
      */
     public function setTotals(): StdClass
     {
-        $firstElementArray = array_values($this->frequencies)[0];
-
-        if (!isset($firstElementArray->accumulateRelativeFrequency)) {
-            throw new AccumulateRelativeFrequency();
-        }
-
-        if (!isset($firstElementArray->accumulatePercentRelativeFrequency)) {
-            throw new AccumulatePercentRelativeFrequency();
-        }
+        $this->validationRequirements([
+            'accumulateRelativeFrequency',
+            'accumulatePercentRelativeFrequency'
+        ]);
 
         $this->totals->frequency = count($this->data);
 
