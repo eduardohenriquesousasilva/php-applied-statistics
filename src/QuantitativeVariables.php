@@ -160,6 +160,24 @@ class QuantitativeVariables extends FrequencyDistribution
     }
 
     /**
+     * This method will calculate the average point in the class
+     * interval
+     *
+     * @return array
+     */
+    public function setMidPointInFrequencies(): array
+    {
+        $this->validationRequirements(['descriptionClassIntervals']);
+
+        foreach ($this->classBreaks as $classBreack) {
+            $midPoint = ($classBreack->lessLimit + $classBreack->upperLimit) / 2;
+            $this->frequencies[$classBreack->class]->midPoint = $midPoint;
+        }
+
+        return $this->frequencies;
+    }
+
+    /**
      * This method will calculate the frequencies using the class intervals
      * that were defineds, this method respect the statistics rules to put
      * a value in the class interval

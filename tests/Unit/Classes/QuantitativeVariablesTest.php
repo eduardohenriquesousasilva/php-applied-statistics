@@ -11,6 +11,7 @@ use drdhnrq\PhpAppliedStatistics\Exceptions\ClassBreaksIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\DescriptionClassInervalIsNotDefined;
 
 class QuantitativeVariablesTest extends TestCase
 {
@@ -467,11 +468,58 @@ class QuantitativeVariablesTest extends TestCase
      */
     public function testExpectedExceptionWhenSetFrequenciesByClassIntervalIsCalledAndDescriptionClassInervalIsNotDefined(): void
     {
-        $this->expectException(ClassBreaksIsNotDefined::class);
+        $this->expectException(DescriptionClassInervalIsNotDefined::class);
         $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
         $quantitativeVariables->sortData();
         $quantitativeVariables->setClassNumber();
         $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+        $quantitativeVariables->setClassBreaks();
         $quantitativeVariables->setFrequenciesByClassInterval();
+    }
+
+
+    /**
+     * This test verifies if the description class interval is defined in the frequencies
+     * when the method setMidPointInFrequencies() is called
+     * @return void
+     */
+    public function testExpectedMidPointDefinedWhenMethodIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data'], 0);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+
+        $quantitativeVariables->intervalClass = 130.00;
+        $quantitativeVariables->setClassBreaks();
+        $quantitativeVariables->setDescriptionClasIntervalInFrequency();
+        $frequencies = $quantitativeVariables->setMidPointInFrequencies();
+
+        $this->assertCount(7, $frequencies);
+
+        $this->assertEquals(1015.0, $frequencies[1]->midPoint);
+        $this->assertEquals(1275.0, $frequencies[3]->midPoint);
+        $this->assertEquals(1665.0, $frequencies[6]->midPoint);
+        $this->assertEquals(1795.0, $frequencies[7]->midPoint);
+    }
+
+    /**
+     * This test verifies if the excepetion DescriptionClassInervalIsNotDefined when the method
+     * setMidPointInFrequencies() is called and the description class wasn't defined
+     * in the frequencies
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetMidPointInFrequenciesIsCalledAndDescriptionClassInervalIsNotDefined(): void
+    {
+        $this->expectException(DescriptionClassInervalIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+        $quantitativeVariables->setClassBreaks();
+        $quantitativeVariables->setMidPointInFrequencies();
     }
 }
