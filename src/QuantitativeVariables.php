@@ -114,7 +114,7 @@ class QuantitativeVariables extends FrequencyDistribution
     {
         $this->validationRequirements([
             'data',
-            'dataOrdered',
+            'orderedData',
             'classNumber',
             'classInterval'
         ]);
@@ -139,5 +139,63 @@ class QuantitativeVariables extends FrequencyDistribution
         } while ($classNumber < $this->classNumber);
 
         return $this->classBreaks;
+    }
+
+    /**
+     * This method will set the desciption class interval in the
+     * frequencies, this attribute will be used to show informations
+     * about interval class that were defineds
+     *
+     * @return array
+     */
+    public function setDescriptionClasIntervalInFrequency(): array
+    {
+        $this->validationRequirements(['classBreaks']);
+
+        foreach ($this->classBreaks as $classBreack) {
+            $this->frequencies[$classBreack->class] = (object) ['descriptionClassInteval' => $classBreack->description];
+        }
+
+        return $this->frequencies;
+    }
+
+    /**
+     * This method will calculate the frequencies using the class intervals
+     * that were defineds, this method respect the statistics rules to put
+     * a value in the class interval
+     *
+     * @return array
+     */
+    public function setFrequenciesByClassInterval(): array
+    {
+        $this->validationRequirements([
+            'data',
+            'orderedData',
+            'classBreaks',
+            'descriptionClassIntervals',
+        ]);
+
+        foreach ($this->classBreaks as $classBreack) {
+            $this->frequencies[$classBreack->class]->frequency = 0;
+
+            foreach ($this->data as $value) {
+                // jump values that are smaller less limit of class interval
+                if ($value < $classBreack->lessLimit) {
+                    continue;
+                }
+
+                // If doesn't jump the value will be increment here
+                $this->frequencies[$classBreack->class]->frequency += 1;
+
+                // In cases that the value is bigger than upper limit class interval
+                // will be need decrement the value and stop the loop
+                if ($value >= $classBreack->upperLimit) {
+                    $this->frequencies[$classBreack->class]->frequency -= 1;
+                    break;
+                }
+            }
+        }
+
+        return $this->frequencies;
     }
 }

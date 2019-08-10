@@ -6,6 +6,7 @@ use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsnotOrdered;
 use drdhnrq\PhpAppliedStatistics\Exceptions\VariableNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\FrequencyNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\ClassBreaksIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
@@ -13,6 +14,7 @@ use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulateRelativeFrequency;
 use drdhnrq\PhpAppliedStatistics\Exceptions\RelativeFrequencyNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\AccumulatePercentRelativeFrequency;
 use drdhnrq\PhpAppliedStatistics\Exceptions\PercentRelativeFrequencyNotDefined;
+use drdhnrq\PhpAppliedStatistics\Exceptions\DescriptionClassInervalIsNotDefined;
 
 trait ValidationRequirements
 {
@@ -171,6 +173,32 @@ trait ValidationRequirements
     {
         if (is_null($this->intervalClass)) {
             throw new IntervalClassIsNotDefined();
+        }
+    }
+
+    /**
+     * Validate if the class breaks was defined
+     *
+     * @return void
+     */
+    public function requiredClassBreaks(): void
+    {
+        if (empty($this->classBreaks)) {
+            throw new ClassBreaksIsNotDefined();
+        }
+    }
+
+    /**
+     * Validate if the description class interval was defined
+     * in the frequencies
+     *
+     * @return void
+     */
+    public function requiredDescriptionClassIntervals(): void
+    {
+        $firstElementArray = array_values($this->frequencies)[0];
+        if (!isset($firstElementArray->descriptionClassInteval)) {
+            throw new DescriptionClassInervalIsNotDefined();
         }
     }
 }

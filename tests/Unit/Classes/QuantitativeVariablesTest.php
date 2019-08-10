@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\QuantitativeVariables;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsnotOrdered;
+use drdhnrq\PhpAppliedStatistics\Exceptions\ClassBreaksIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
 use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
@@ -341,5 +342,136 @@ class QuantitativeVariablesTest extends TestCase
         $quantitativeVariables->setClassNumber();
         $quantitativeVariables->setBreadthSample();
         $quantitativeVariables->setClassBreaks();
+    }
+
+    /**
+     * This test verifies if the description class interval is defined in the frequencies
+     * when the method setDescriptionClasIntervalInFrequency() is called
+     * @return void
+     */
+    public function testExpectedDescriptionIntervalClassDefinedWhenMethodIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data'], 0);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+
+        $quantitativeVariables->intervalClass = 130.00;
+        $quantitativeVariables->setClassBreaks();
+        $frequencies = $quantitativeVariables->setDescriptionClasIntervalInFrequency();
+
+        $this->assertCount(7, $frequencies);
+
+        $expected = (object) [
+            'descriptionClassInteval' => "950 |-- 1080",
+        ];
+        $this->assertContainsEquals($expected, $frequencies);
+
+        $expected = (object) [
+            'descriptionClassInteval' => "1340 |-- 1470",
+        ];
+        $this->assertContainsEquals($expected, $frequencies);
+
+        $expected = (object) [
+            'descriptionClassInteval' => "1730 |-- 1860",
+        ];
+        $this->assertContainsEquals($expected, $frequencies);
+    }
+
+    /**
+     * This test verifies if the excepetion ClassBreaksIsNotDefined when the method
+     * setDescriptionClasIntervalInFrequency() is called and the class breaks wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetDescriptionClasIntervalInFrequencyIsCalledAndClassBreakIsNotDefined(): void
+    {
+        $this->expectException(ClassBreaksIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setDescriptionClasIntervalInFrequency();
+    }
+
+    /**
+     * This test verifies if frequency is defined in the frequencies when the method
+     * setFrequenciesByClassInterval() is called
+     * @return void
+     */
+    public function testExpectedFrequenciesDefinedWhenMethodIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data'], 0);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setIntervalClass();
+
+        $quantitativeVariables->intervalClass = 130.00;
+        $quantitativeVariables->setClassBreaks();
+        $quantitativeVariables->setDescriptionClasIntervalInFrequency();
+        $frequencies = $quantitativeVariables->setFrequenciesByClassInterval();
+
+        $this->assertCount(7, $frequencies);
+        $this->assertEquals(12, $frequencies[1]->frequency);
+        $this->assertEquals(8, $frequencies[3]->frequency);
+        $this->assertEquals(5, $frequencies[5]->frequency);
+        $this->assertEquals(8, $frequencies[7]->frequency);
+    }
+
+
+    /**
+     * This test verifies if the excepetion DataIsEmpty when the method
+     * setFrequenciesByClassInterval() is called and the data wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetFrequenciesByClassIntervalIsCalledAndDataIsEmpty(): void
+    {
+        $this->expectException(DataIsEmpty::class);
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->setFrequenciesByClassInterval();
+    }
+
+    /**
+     * This test verifies if the excepetion DataIsnotOrdered when the method
+     * setFrequenciesByClassInterval() is called and the data wasn't ordered
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetFrequenciesByClassIntervalIsCalledAndDataIsnotOrdered(): void
+    {
+        $this->expectException(DataIsnotOrdered::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->setFrequenciesByClassInterval();
+    }
+
+    /**
+     * This test verifies if the excepetion ClassBreaksIsNotDefined when the method
+     * setFrequenciesByClassInterval() is called and the class breaks wasn't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetFrequenciesByClassIntervalIsCalledAndClassBreakIsNotDefined(): void
+    {
+        $this->expectException(ClassBreaksIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setFrequenciesByClassInterval();
+    }
+
+    /**
+     * This test verifies if the excepetion DescriptionClassInervalIsNotDefined when the method
+     * setFrequenciesByClassInterval() is called and the description class wasn't defined
+     * in the frequencies
+     * @return void
+     */
+    public function testExpectedExceptionWhenSetFrequenciesByClassIntervalIsCalledAndDescriptionClassInervalIsNotDefined(): void
+    {
+        $this->expectException(ClassBreaksIsNotDefined::class);
+        $quantitativeVariables = new QuantitativeVariables(DataProvider::employeesSalary()['data']);
+        $quantitativeVariables->sortData();
+        $quantitativeVariables->setClassNumber();
+        $quantitativeVariables->setBreadthSample();
+        $quantitativeVariables->setFrequenciesByClassInterval();
     }
 }
