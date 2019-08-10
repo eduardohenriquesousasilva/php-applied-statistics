@@ -286,7 +286,6 @@ class FrequencyDistributionTest extends TestCase
         $dataOrdered = $frequencyDistribution->sortData();
 
         $this->assertCount(30, $frequencyDistribution->data);
-        $this->assertEquals($defectiveParts['ordered'], $dataOrdered);
         $this->assertEquals(0, $dataOrdered[0]);
         $this->assertEquals(1, $dataOrdered[14]);
         $this->assertEquals(2, $dataOrdered[25]);

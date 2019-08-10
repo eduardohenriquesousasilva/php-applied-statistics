@@ -2,13 +2,7 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
-use StdClass;
 use drdhnrq\PhpAppliedStatistics\FrequencyDistribution;
-use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
-use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsnotOrdered;
-use drdhnrq\PhpAppliedStatistics\Exceptions\ClassNumberIsNotDefined;
-use drdhnrq\PhpAppliedStatistics\Exceptions\BreadthSampleIsNotDefined;
-use drdhnrq\PhpAppliedStatistics\Exceptions\IntervalClassIsNotDefined;
 
 class QuantitativeVariables extends FrequencyDistribution
 {
@@ -63,11 +57,9 @@ class QuantitativeVariables extends FrequencyDistribution
      */
     public function setClassNumber(): int
     {
-        $countData = count($this->data);
+        $this->validationRequirements(['data']);
 
-        if (!$countData) {
-            throw new DataIsEmpty();
-        }
+        $countData = count($this->data);
 
         $numberClass = ($countData <= 50)
             ? $this->round(sqrt($countData), 0)
@@ -88,16 +80,7 @@ class QuantitativeVariables extends FrequencyDistribution
      */
     public function setBreadthSample(): int
     {
-        if (!$this->data) {
-            throw new DataIsEmpty();
-        }
-
-        $cloneDataSorted = $this->data;
-        sort($cloneDataSorted);
-
-        if ($this->data !== $cloneDataSorted) {
-            throw new DataIsnotOrdered();
-        }
+        $this->validationRequirements(['data', 'orderedData']);
 
         // The bigger value - smaller value
         return $this->breadthSample = intval(end($this->data) -  $this->data[0]);
@@ -112,13 +95,7 @@ class QuantitativeVariables extends FrequencyDistribution
      */
     public function setIntervalClass(): float
     {
-        if (is_null($this->breadthSample)) {
-            throw new BreadthSampleIsNotDefined();
-        }
-
-        if (is_null($this->classNumber)) {
-            throw new ClassNumberIsNotDefined();
-        }
+        $this->validationRequirements(['breadthSample', 'classNumber']);
 
         return $this->intervalClass = $this->round(
             ($this->breadthSample / $this->classNumber),
@@ -135,24 +112,12 @@ class QuantitativeVariables extends FrequencyDistribution
      */
     public function setClassBreaks(): array
     {
-        if (!$this->data) {
-            throw new DataIsEmpty();
-        }
-
-        $cloneDataSorted = $this->data;
-        sort($cloneDataSorted);
-
-        if ($this->data !== $cloneDataSorted) {
-            throw new DataIsnotOrdered();
-        }
-
-        if (is_null($this->classNumber)) {
-            throw new ClassNumberIsNotDefined();
-        }
-
-        if (is_null($this->intervalClass)) {
-            throw new IntervalClassIsNotDefined();
-        }
+        $this->validationRequirements([
+            'data',
+            'dataOrdered',
+            'classNumber',
+            'classInterval'
+        ]);
 
         $lessLimitClass = $this->data[0];
         $upperLimitClass = 0;
