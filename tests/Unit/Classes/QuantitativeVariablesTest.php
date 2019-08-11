@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '../../../Data/DataProvider.php';
 
-use StdClass;
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\QuantitativeVariables;
 use drdhnrq\PhpAppliedStatistics\Exceptions\DataIsEmpty;
@@ -128,6 +127,45 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertTrue(
             method_exists($quantitativeVariables, 'setClassBreaks'),
             'The setClassBreaks method doesn\'t exist in the class QuantitativeVariables'
+        );
+    }
+
+    /**
+     * This test will verify if the calculateClassIntervalFrequency property exists in this class
+     * @return void
+     */
+    public function testExpectedExistMethodCalculateClassIntervalFrequency(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $this->assertTrue(
+            method_exists($quantitativeVariables, 'calculateClassIntervalFrequency'),
+            'The calculateClassIntervalFrequency method doesn\'t exist in the class QuantitativeVariables'
+        );
+    }
+
+    /**
+     * This test will verify if the calculateSimpleFrequency property exists in this class
+     * @return void
+     */
+    public function testExpectedExistMethodCalculateSimpleFrequency(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $this->assertTrue(
+            method_exists($quantitativeVariables, 'calculateSimpleFrequency'),
+            'The calculateSimpleFrequency method doesn\'t exist in the class QuantitativeVariables'
+        );
+    }
+
+    /**
+     * This test will verify if the calculate property exists in this class
+     * @return void
+     */
+    public function testExpectedExistMethodCalculate(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $this->assertTrue(
+            method_exists($quantitativeVariables, 'calculate'),
+            'The calculate method doesn\'t exist in the class QuantitativeVariables'
         );
     }
 
@@ -521,5 +559,62 @@ class QuantitativeVariablesTest extends TestCase
         $quantitativeVariables->setIntervalClass();
         $quantitativeVariables->setClassBreaks();
         $quantitativeVariables->setMidPointInFrequencies();
+    }
+
+    /**
+     * This test verifies if the method calculate is call the correct method
+     * to apply the frequency distribution when the type of should used to calculate
+     * wasn't proved as argument
+     * @return void
+     */
+    public function testExpectedFrequenciesDefinedCorretMethodWhenMethodCalculateIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->data = DataProvider::employeesSalary()['data'];
+        $quantitativeVariables->decimalPlaces = 0;
+        $result = $quantitativeVariables->calculate();
+
+        $this->assertObjectHasAttribute('midPoint', $result->rows[6]);
+
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->data = DataProvider::defectiveParts()['data'];
+        $quantitativeVariables->decimalPlaces = 0;
+        $result = $quantitativeVariables->calculate();
+        $this->assertObjectHasAttribute('variable', $result->rows[2]);
+    }
+
+    /**
+     * This test will verifies if the frequency distribution is calculated with
+     * the class interval when the argument is provide to calculate method to
+     * force use this properties in the calculation
+     * @return void
+     */
+    public function testExpectedFrequenciesDefinedForceUseIntervalClassWhenArgumentIsProvideToMethodCalculateIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->data = DataProvider::defectiveParts()['data'];
+        $quantitativeVariables->decimalPlaces = 0;
+        $result = $quantitativeVariables->calculate(true);
+        $this->assertObjectHasAttribute('midPoint', $result->rows[0]);
+    }
+
+    /**
+     * This test Verifies if the class interval provide as argument is used when
+     * the method to calculate the frequencies with class interval received this
+     * value as argument
+     * calculateClassIntervalFrequency()
+     * @return void
+     */
+    public function testExpectedUseTheClassIntervalProvideAsArgumentWhenMethodCalculateClassIntervalFrequencyIsCalled(): void
+    {
+        $quantitativeVariables = new QuantitativeVariables();
+        $quantitativeVariables->data = DataProvider::employeesSalary()['data'];
+        $quantitativeVariables->decimalPlaces = 0;
+        $result = $quantitativeVariables->calculateClassIntervalFrequency(130.00);
+
+        $this->assertEquals(130.00, $quantitativeVariables->intervalClass);
+        $this->assertEquals(950.00, $quantitativeVariables->classBreaks[1]->lessLimit);
+        $this->assertEquals(1080.00, $quantitativeVariables->classBreaks[1]->upperLimit);
+        $this->assertObjectHasAttribute('midPoint', $result->rows[0]);
     }
 }

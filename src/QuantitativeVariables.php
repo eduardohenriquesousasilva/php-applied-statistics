@@ -2,6 +2,7 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
+use StdClass;
 use drdhnrq\PhpAppliedStatistics\FrequencyDistribution;
 
 class QuantitativeVariables extends FrequencyDistribution
@@ -119,13 +120,13 @@ class QuantitativeVariables extends FrequencyDistribution
             'classInterval'
         ]);
 
-        $lessLimitClass = $this->data[0];
+        $lessLimitClass = $this->round($this->data[0], $this->decimalPlaces);
         $upperLimitClass = 0;
         $classNumber = 0;
 
         do {
             $classNumber++;
-            $upperLimitClass = ($lessLimitClass + $this->intervalClass);
+            $upperLimitClass = $this->round(($lessLimitClass + $this->intervalClass), $this->decimalPlaces);
 
             $this->classBreaks[$classNumber] = (object) [
                 'lessLimit' => $lessLimitClass,
@@ -153,7 +154,9 @@ class QuantitativeVariables extends FrequencyDistribution
         $this->validationRequirements(['classBreaks']);
 
         foreach ($this->classBreaks as $classBreack) {
-            $this->frequencies[$classBreack->class] = (object) ['descriptionClassInteval' => $classBreack->description];
+            $this->frequencies[$classBreack->class] = (object) [
+                'descriptionClassInteval' => $classBreack->description
+            ];
         }
 
         return $this->frequencies;
@@ -171,7 +174,10 @@ class QuantitativeVariables extends FrequencyDistribution
 
         foreach ($this->classBreaks as $classBreack) {
             $midPoint = ($classBreack->lessLimit + $classBreack->upperLimit) / 2;
-            $this->frequencies[$classBreack->class]->midPoint = $midPoint;
+            $this->frequencies[$classBreack->class]->midPoint = $this->round(
+                $midPoint,
+                $this->decimalPlaces
+            );
         }
 
         return $this->frequencies;
@@ -215,5 +221,79 @@ class QuantitativeVariables extends FrequencyDistribution
         }
 
         return $this->frequencies;
+    }
+
+    /**
+     * Default method to calculate frequency distribution,
+     * this method will call the correct method to calculate
+     * the frequency using the class intervals or no
+     *
+     * @param bool|null $useClassInterval
+     * @return StdClass
+     */
+    public function calculate($useClassInterval = null): StdClass
+    {
+        $countClassForData = count(array_unique($this->data));
+        // Determine if necessary use class interval or no
+        $useClassInterval = is_null($useClassInterval)
+            ? ($countClassForData > 10)
+            : $useClassInterval;
+
+        if (!$useClassInterval) {
+            return $this->calculateSimpleFrequency();
+        }
+
+        return $this->calculateClassIntervalFrequency();
+    }
+
+    /**
+     * This method will caculate the frequency distribution
+     * using the methods that aren't need the use class intervals
+     *
+     * @return StdClass
+     */
+    public function calculateSimpleFrequency(): StdClass
+    {
+        $this->sortData();
+        $this->setVariablesFrequency();
+        $this->setFrequencies();
+        $this->setRelativeFrequencies();
+        $this->setPercentRelativeFrequencies();
+        $this->setAccumulateFrequencies();
+        $this->setAccumulateRelativeFrequencies();
+        $this->setPercentAccumulateRelativeFrequencies();
+
+        return $this->setResults();
+    }
+
+    /**
+     * This method will calculate the frequency distribution
+     * using the methods to apply the class intervals, the class
+     * intervals can be provide as argument in this method
+     *
+     * @param integer|float $intervalClass
+     * @return StdClass
+     */
+    public function calculateClassIntervalFrequency($intervalClass = null): StdClass
+    {
+        $this->sortData();
+        $this->setClassNumber();
+        $this->setBreadthSample();
+
+        $this->intervalClass = !is_null($intervalClass)
+            ? $intervalClass
+            : $this->setIntervalClass();
+
+        $this->setClassBreaks();
+        $this->setDescriptionClasIntervalInFrequency();
+        $this->setMidPointInFrequencies();
+        $this->setFrequenciesByClassInterval();
+        $this->setRelativeFrequencies();
+        $this->setPercentRelativeFrequencies();
+        $this->setAccumulateFrequencies();
+        $this->setAccumulateRelativeFrequencies();
+        $this->setPercentAccumulateRelativeFrequencies();
+
+        return $this->setResults();
     }
 }
