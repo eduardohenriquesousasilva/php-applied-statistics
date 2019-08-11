@@ -2,6 +2,7 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
+use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 
 /**
@@ -31,6 +32,14 @@ class AppliedStatistics
     public $decimalPlaces;
 
     /**
+     * This property will contain the result of frequency distribution
+     * applied
+     *
+     * @var StdClass
+     */
+    public $results;
+
+    /**
      * @param integer $decimalPlaces
      */
     public function __construct(int $decimalPlaces = null)
@@ -38,5 +47,17 @@ class AppliedStatistics
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
             : $decimalPlaces;
+    }
+
+    public function quantitativeVariables(array $data, bool $useClassInterval = null)
+    {
+        $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
+        return $this->result = $quantitativeVariables->calculate($useClassInterval);
+    }
+
+    public function quantitativeVariablesIntervalClass(array $data, $intervalClass)
+    {
+        $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
+        return $this->result = $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
     }
 }

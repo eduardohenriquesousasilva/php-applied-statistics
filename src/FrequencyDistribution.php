@@ -51,6 +51,14 @@ class FrequencyDistribution
     public $totals;
 
     /**
+     * This property will contain the result of frequency distribution
+     * applied
+     *
+     * @var StdClass
+     */
+    public $results;
+
+    /**
      * All arguments are optional, but in a moment they are necessary to
      * calculate the statistics operations.
      *
@@ -62,6 +70,7 @@ class FrequencyDistribution
         $this->data = $data;
         $this->frequencies = array();
         $this->totals = new StdClass();
+        $this->results = new StdClass();
 
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
@@ -116,8 +125,11 @@ class FrequencyDistribution
     {
         $this->validationRequirements(['variables']);
 
-        foreach (array_count_values($this->data) as $variable => $frequency) {
-            $this->frequencies[$variable]->frequency = $frequency;
+        foreach ($this->data as $variable) {
+            if (!isset($this->frequencies[$variable]->frequency)) {
+                $this->frequencies[$variable]->frequency = 0;
+            }
+            $this->frequencies[$variable]->frequency++;
         }
 
         return $this->frequencies;
@@ -251,5 +263,33 @@ class FrequencyDistribution
         );
 
         return $this->totals;
+    }
+
+    /**
+     * This methods will call the method totals to put theses
+     * values in the result with frequency distribution that
+     * was calculated, this method will format the result response
+     * and save this value in the property results in the class
+     *
+     * @return StdClass
+     */
+    public function setResults(): StdClass
+    {
+        $this->validationRequirements(['frequency']);
+
+        $this->setTotals();
+
+        $this->result = (object) [
+            'rows' => [],
+            'totals' => $this->totals
+        ];
+
+        $classNumber = 1;
+        foreach ($this->frequencies as $frequency) {
+            $frequency->class = $classNumber;
+            array_push($this->result->rows, $frequency);
+        }
+
+        return $this->result;
     }
 }

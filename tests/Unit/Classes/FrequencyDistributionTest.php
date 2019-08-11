@@ -86,6 +86,19 @@ class FrequencyDistributionTest extends TestCase
         );
     }
 
+    /**
+     * This test will verify if the results property exists in the class
+     * @return void
+     */
+    public function testExpectedExistPropertyResults(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution();
+        $this->assertTrue(
+            property_exists($frequencyDistribution, 'results'),
+            'The results property doesn\'t exist in the class Frequency Distribution'
+        );
+    }
+
     /********************************************************************************
      *
      * Smoke tests EXIST METHODS
@@ -206,6 +219,19 @@ class FrequencyDistributionTest extends TestCase
         $this->assertTrue(
             method_exists($frequencyDistribution, 'setTotals'),
             'The setTotals() method doesn\'t exist in the class Frequency Distribution'
+        );
+    }
+
+    /**
+     * This test will verify if setResults() method exists in the class
+     * @return void
+     */
+    public function testExpectedExistSetResultsMethod(): void
+    {
+        $frequencyDistribution = new FrequencyDistribution();
+        $this->assertTrue(
+            method_exists($frequencyDistribution, 'setResults'),
+            'The setResults() method doesn\'t exist in the class Frequency Distribution'
         );
     }
 
@@ -605,5 +631,67 @@ class FrequencyDistributionTest extends TestCase
         $frequencyDistribution->setRelativeFrequencies();
         $frequencyDistribution->setAccumulateRelativeFrequencies();
         $frequencyDistribution->setTotals();
+    }
+
+    /**
+     * This test verifies if the results is defined when method
+     * setResults() is called
+     * @return void
+     */
+    public function testExpectedSetResultsWhenMethodIsCalled(): void
+    {
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+
+        $frequencyDistribution->sortData();
+        $frequencyDistribution->setVariablesFrequency();
+        $frequencyDistribution->setFrequencies();
+        $frequencyDistribution->setRelativeFrequencies();
+        $frequencyDistribution->setPercentRelativeFrequencies();
+        $frequencyDistribution->setAccumulateFrequencies();
+        $frequencyDistribution->setAccumulateRelativeFrequencies();
+        $frequencyDistribution->setPercentAccumulateRelativeFrequencies();
+        $result = $frequencyDistribution->setResults();
+
+        $this->assertObjectHasAttribute('rows', $result);
+        $this->assertObjectHasAttribute('totals', $result);
+
+        $expected = (object) [
+            'variable' => 0,
+            'frequency' => 14,
+            'relativeFrequency' => 0.46667,
+            'percentRelativeFrequency' => 46.667,
+            'accumulateFrequency' => 14,
+            'accumulateRelativeFrequency' => 0.46667,
+            'accumulatePercentRelativeFrequency' => 46.667,
+            'class' => 1,
+        ];
+        $this->assertEquals($expected, $result->rows[0]);
+
+        $expected = (object) [
+            'variable' => 2,
+            'frequency' => 5,
+            'relativeFrequency' => 0.16667,
+            'percentRelativeFrequency' => 16.667,
+            'accumulateFrequency' => 30,
+            'accumulateRelativeFrequency' => 1.00001,
+            'accumulatePercentRelativeFrequency' => 100.001,
+            'class' => 1,
+        ];
+        $this->assertEquals($expected, $result->rows[2]);
+    }
+
+    /**
+     * This test verifies if the Exception FrequencyNotDefined will be returned
+     * when the method setResults() is called and the frequencies weren't defined
+     * @return void
+     */
+    public function testExpectedExceptionWhenFrequencyIsNotDefindAndMethodSetResultsIsCalled(): void
+    {
+        $this->expectException(FrequencyNotDefined::class);
+
+        $defectiveParts = DataProvider::defectiveParts();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+        $frequencyDistribution->setResults();
     }
 }
