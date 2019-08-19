@@ -56,7 +56,6 @@ class AppliedStatistcsTest extends TestCase
         $appliedStatistics = new AppliedStatistics(3);
         $this->assertEquals(3, $appliedStatistics->decimalPlaces);
 
-
         $appliedStatistics = new AppliedStatistics(1);
         $this->assertEquals(1, $appliedStatistics->decimalPlaces);
     }
