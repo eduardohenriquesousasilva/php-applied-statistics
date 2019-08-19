@@ -49,13 +49,31 @@ class AppliedStatistics
             : $decimalPlaces;
     }
 
-    public function quantitativeVariables(array $data, bool $useClassInterval = null)
+    /**
+     * This method will calculate the frequency distribution choosing it is
+     * necessary to use the class interval or no, the calculation that is made
+     * here is full, but if the class interval was provided as  argument
+     * the class interval will be applied in this operation
+     *
+     * @param array $data
+     * @param bool|null $useClassInterval
+     * @return StdClass
+     */
+    public function quantitativeVariables(array $data, $useClassInterval = null): StdClass
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
         return $this->result = $quantitativeVariables->calculate($useClassInterval);
     }
 
-    public function quantitativeVariablesIntervalClass(array $data, $intervalClass)
+    /**
+     * This method will calculate the frequency distribution with the class intervals
+     * it's possbile provide the class interval in this method
+     *
+     * @param array $data
+     * @param bool|null $intervalClass
+     * @return StdClass
+     */
+    public function quantitativeVariablesIntervalClass(array $data, $intervalClass): StdClass
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
         return $this->result = $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
