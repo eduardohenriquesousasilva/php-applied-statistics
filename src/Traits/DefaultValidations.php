@@ -9,15 +9,19 @@ trait DefaultValidations
     /**
      * This method will validate if the variable exist in the data
      *
+     * @param array $data
      * @param array $orderedVariables
-     * @return void
+     *
+     * @return array
      */
-    public function validManualDefinedVariables(array $orderedVariables): void
+    public function validManualDefinedVariables(array $data, array $orderedVariables): array
     {
         foreach ($orderedVariables as $variable) {
-            if (!in_array($variable, $this->data)) {
+            if (!in_array($variable, $data)) {
                 throw new VariableNotExistsInData();
             }
         }
+
+        return $data;
     }
 }
