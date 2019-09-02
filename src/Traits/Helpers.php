@@ -46,4 +46,19 @@ trait Helpers
     {
         return ($amount / 100) * $percent;
     }
+
+    /**
+     * This method will format the data that contains string values
+     * for each value will have the first letter in upper case and the
+     * other in lower case
+     *
+     * @param array $data
+     * @return array
+     */
+    public function formatStringData(array $data): array
+    {
+        return array_map(function ($item) {
+            return ucfirst(strtolower($item));
+        }, $data);
+    }
 }

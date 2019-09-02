@@ -6,21 +6,13 @@ use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 class HelpersTest extends TestCase
 {
     /**
-     * Get the trait to apply the tests
-     */
-    private function getMockTrait()
-    {
-        return $this->getMockForTrait(Helpers::class);
-    }
-
-    /**
      * This test verifies if the method round exists in the trait helpers
      *
      * @return void
      */
     public function testExpectedThatRoundMethodExists()
     {
-        $mockTrait =  $this->getMockTrait();
+        $mockTrait = $this->getMockForTrait(Helpers::class);
         $this->assertTrue(
             method_exists($mockTrait, 'round'),
             'The Trait Helpers not have method round'
@@ -34,7 +26,7 @@ class HelpersTest extends TestCase
      */
     public function testExpectedThatCalcPercentMethodExists()
     {
-        $mockTrait =  $this->getMockTrait();
+        $mockTrait = $this->getMockForTrait(Helpers::class);
         $this->assertTrue(
             method_exists($mockTrait, 'calcPercent'),
             'The Trait Helpers not have method calcPercent'

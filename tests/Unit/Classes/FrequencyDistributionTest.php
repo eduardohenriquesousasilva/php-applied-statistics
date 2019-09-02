@@ -94,7 +94,7 @@ class FrequencyDistributionTest extends TestCase
     {
         $frequencyDistribution = new FrequencyDistribution();
         $this->assertTrue(
-            property_exists($frequencyDistribution, 'results'),
+            property_exists($frequencyDistribution, 'result'),
             'The results property doesn\'t exist in the class Frequency Distribution'
         );
     }
@@ -333,6 +333,25 @@ class FrequencyDistributionTest extends TestCase
         $this->assertEquals(0, $frequencies[0]->variable);
         $this->assertEquals(1, $frequencies[1]->variable);
         $this->assertEquals(2, $frequencies[2]->variable);
+    }
+
+    /**
+     * This test will verify if the variables that the data contains are being
+     * defined using the argument provide when the method setVariablesFrequency is called
+     * setVariablesFrequency()
+     * @return void
+     */
+    public function testExpectedSetVariablesWhenMethodUseOrderProvideArgumentIsCalled(): void
+    {
+        $defectiveParts = DataProvider::civilStatusPeople();
+        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
+        $frequencies = $frequencyDistribution->setVariablesFrequency(['solteiro', 'casado', 'viúvo', 'separado']);
+
+        $this->assertCount(4, $frequencies);
+        $this->assertEquals('solteiro', $frequencies['solteiro']->variable);
+        $this->assertEquals('casado', $frequencies['casado']->variable);
+        $this->assertEquals('viúvo', $frequencies['viúvo']->variable);
+        $this->assertEquals('separado', $frequencies['separado']->variable);
     }
 
     /**
