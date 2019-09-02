@@ -37,7 +37,7 @@ class AppliedStatistics
      *
      * @var StdClass
      */
-    public $results;
+    public $result;
 
     /**
      * @param integer $decimalPlaces
@@ -77,5 +77,19 @@ class AppliedStatistics
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
         return $this->result = $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
+    }
+
+    /**
+     * This method will calculate the frequency distribution when the values are string
+     * and the data are qualitative variable
+     *
+     * @param array $data
+     * @param array $orderedVariables
+     * @return StdClass
+     */
+    public function qualitativeVariables(array $data, array $orderedVariables = []): StdClass
+    {
+        $qualitativeVariables = new QualitativeVariables($data, $this->decimalPlaces);
+        return $this->result = $qualitativeVariables->calculate($orderedVariables);
     }
 }

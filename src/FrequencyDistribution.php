@@ -2,13 +2,14 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
+use drdhnrq\PhpAppliedStatistics\Traits\DefaultValidations;
 use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 use drdhnrq\PhpAppliedStatistics\Traits\ValidationRequirements;
 
 class FrequencyDistribution
 {
-    use Helpers, ValidationRequirements;
+    use Helpers, ValidationRequirements, DefaultValidations;
 
     /**
      * This constant defines the number of decimal places will be used when the
@@ -56,7 +57,7 @@ class FrequencyDistribution
      *
      * @var StdClass
      */
-    public $results;
+    public $result;
 
     /**
      * All arguments are optional, but in a moment they are necessary to
@@ -70,7 +71,7 @@ class FrequencyDistribution
         $this->data = $data;
         $this->frequencies = array();
         $this->totals = new StdClass();
-        $this->results = new StdClass();
+        $this->result = new StdClass();
 
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
@@ -99,11 +100,15 @@ class FrequencyDistribution
      *
      * @return array
      */
-    public function setVariablesFrequency(): array
+    public function setVariablesFrequency(array $variablesOrder = []): array
     {
         $this->validationRequirements(['data']);
 
-        foreach (array_unique($this->data) as $variable) {
+        $variables = (!empty($variablesOrder))
+            ? $variablesOrder
+            : array_unique($this->data);
+
+        foreach ($variables as $variable) {
             $object = new StdClass();
             $object->variable = $variable;
             $this->frequencies[$variable] = $object;

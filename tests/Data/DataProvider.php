@@ -2,12 +2,28 @@
 
 class DataProvider
 {
+    public static function civilStatusPeople(): array
+    {
+        return [
+            'data' => [
+                'separado', 'separado', 'viúvo', 'solteiro', 'casado', 'casado', 'casado',
+                'solteiro', 'viúvo', 'casado', 'solteiro', 'solteiro', 'solteiro', 'separado',
+                'casado', 'separado', 'solteiro', 'casado', 'casado', 'separado', 'separado',
+                'casado', 'solteiro', 'casado', 'casado', 'separado', 'separado', 'separado',
+                'separado', 'viúvo', 'separado', 'casado', 'solteiro', 'casado', 'separado',
+                'casado', 'separado', 'casado', 'casado', 'solteiro', 'casado', 'solteiro',
+                'separado', 'solteiro', 'solteiro', 'casado', 'separado', 'separado', 'casado',
+                'solteiro', 'casado', 'separado', 'casado', 'casado', 'viúvo', 'casado',
+            ]
+        ];
+    }
+
     /**
      * This data represents the number of defective parts that a
      * company has in each box that was made by her.
      * These data will be used to do a continuous frequency Distribution.
      *
-     * @return void
+     * @return array
      */
     public static function defectiveParts(): array
     {
