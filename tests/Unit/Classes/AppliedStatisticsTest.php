@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__ . '../../../Data/DataProvider.php';
-
-use DataProvider;
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\AppliedStatistics;
 
