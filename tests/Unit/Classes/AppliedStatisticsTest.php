@@ -150,14 +150,14 @@ class AppliedStatistcsTest extends TestCase
         $appliedStatistics = new AppliedStatistics();
 
         // Without ordered variables
-        $appliedStatistics->decimalPlaces = 0;
+        $appliedStatistics->decimalPlaces = 5;
         $result = $appliedStatistics->qualitativeVariables(DataProvider::civilStatusPeople()['data']);
         $this->assertObjectHasAttribute('rows', $result);
         $this->assertObjectHasAttribute('totals', $result);
         $this->assertEquals(4, count($result->rows));
 
         // Ordered variables
-        $appliedStatistics->decimalPlaces = 0;
+        $appliedStatistics->decimalPlaces = 5;
         $result = $appliedStatistics->qualitativeVariables(
             DataProvider::civilStatusPeople()['data'],
             ['solteiro', 'casado', 'viúvo', 'separado']
