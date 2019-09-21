@@ -32,14 +32,6 @@ class AppliedStatistics
     public $decimalPlaces;
 
     /**
-     * This property will contain the result of frequency distribution
-     * applied
-     *
-     * @var StdClass
-     */
-    public $result;
-
-    /**
      * @param integer $decimalPlaces
      */
     public function __construct(int $decimalPlaces = null)
@@ -62,7 +54,7 @@ class AppliedStatistics
     public function quantitativeVariables(array $data, $useClassInterval = null): StdClass
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
-        return $this->result = $quantitativeVariables->calculate($useClassInterval);
+        return $quantitativeVariables->calculate($useClassInterval);
     }
 
     /**
@@ -76,7 +68,7 @@ class AppliedStatistics
     public function quantitativeVariablesIntervalClass(array $data, $intervalClass): StdClass
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
-        return $this->result = $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
+        return $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
     }
 
     /**
@@ -90,6 +82,6 @@ class AppliedStatistics
     public function qualitativeVariables(array $data, array $orderedVariables = []): StdClass
     {
         $qualitativeVariables = new QualitativeVariables($data, $this->decimalPlaces);
-        return $this->result = $qualitativeVariables->calculate($orderedVariables);
+        return $qualitativeVariables->calculate($orderedVariables);
     }
 }

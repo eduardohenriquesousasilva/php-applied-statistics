@@ -32,22 +32,6 @@ trait Helpers
     }
 
     /**
-     * Calculate the percent
-     *
-     * This method will calculate the percent value, using the amount and percent
-     * passed as arguments of method
-     *
-     * @param integer|float $amount
-     * @param integer|float $percent
-     *
-     * @return float
-     */
-    public function calcPercent($amount, $percent, $decimalPlaces = null): float
-    {
-        return ($amount / 100) * $percent;
-    }
-
-    /**
      * This method will format the data that contains string values
      * for each value will have the first letter in upper case and the
      * other in lower case

@@ -6,58 +6,43 @@ use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 class HelpersTest extends TestCase
 {
     /**
-     * This test verifies if the method round exists in the trait helpers
+     * This test verifies if the methods exists in the trait
      *
      * @return void
      */
-    public function testExpectedThatRoundMethodExists()
+    public function testMethodsExists()
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
+
+        // round()
         $this->assertTrue(
             method_exists($mockTrait, 'round'),
             'The Trait Helpers not have method round'
         );
-    }
 
-    /**
-     * This test verifies if the method calcPercent exists in the trait helpers
-     *
-     * @return void
-     */
-    public function testExpectedThatCalcPercentMethodExists()
-    {
-        $mockTrait = $this->getMockForTrait(Helpers::class);
+        // formatStringData()
         $this->assertTrue(
-            method_exists($mockTrait, 'calcPercent'),
-            'The Trait Helpers not have method calcPercent'
+            method_exists($mockTrait, 'formatStringData'),
+            'The Trait Helpers not have method formatStringData'
         );
     }
 
     /**
-     * This test verifies if the round method doesnt round the value when
-     * it doesnt receive the argument decimal places
+     * This test will check if the round method is rounding the correct way
+     * when it called
      *
      * @return void
      */
-    public function testExpectedRoundMethodDoesntRounValueWhenDoesntReceiveDecimalPlaces()
+    public function testRoundMethod()
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
 
+        // Without decimal places
         $this->assertEquals(1.4515, $mockTrait->round(1.4515));
         $this->assertEquals(1.45155, $mockTrait->round(1.45155));
         $this->assertEquals(1.45151, $mockTrait->round(1.45151));
-    }
 
-    /**
-     * This method verifies if the round method is applying the decimal places
-     * passeds as argument method
-     *
-     * @return void
-     */
-    public function testExpectedThatRoundMethodUseDecimalPlacesPassedsArgumentMethod()
-    {
-        $mockTrait = $this->getMockForTrait(Helpers::class);
-
+        // With decimal places
         $this->assertEquals(300, $mockTrait->round(300.32, 0));
         $this->assertEquals(404, $mockTrait->round(403.6440, 0));
         $this->assertEquals(35.3, $mockTrait->round(35.32216, 1));
@@ -70,21 +55,21 @@ class HelpersTest extends TestCase
     }
 
     /**
-     * This method verifies if the calcPercent method is calculating the amount
-     * right
+     * This test will verifies if the data are formmated when the method
+     * formatStringData is called
      *
      * @return void
      */
-    public function testExpectedCalcPercentMethodUseDecimalPlacesPassdsArgumentsMethod()
+    public function testFormatStringDataMethod()
     {
         $mockTrait = $this->getMockForTrait(Helpers::class);
 
-        $this->assertEquals(3690.00, $mockTrait->calcPercent(24600.00, 15));
-        $this->assertEquals(14670.00, $mockTrait->calcPercent(244500.00, 6));
-        $this->assertEquals(547.2, $mockTrait->calcPercent(5700.00, 9.6));
-        $this->assertEquals(42, $mockTrait->calcPercent(600, 7));
-        $this->assertEquals(1305.1, $mockTrait->calcPercent(6200, 21.05));
-        $this->assertEquals(11.685, $mockTrait->calcPercent(123, 9.5));
-        $this->assertEquals(19.204349999999998, $mockTrait->calcPercent(1243, 1.545, 1));
+        $data = ['test', 'name'];
+        $this->assertEquals('Test', $mockTrait->formatStringData($data)[0]);
+        $this->assertEquals('Name', $mockTrait->formatStringData($data)[1]);
+
+        $data = ['tESt', 'naME'];
+        $this->assertEquals('Test', $mockTrait->formatStringData($data)[0]);
+        $this->assertEquals('Name', $mockTrait->formatStringData($data)[1]);
     }
 }

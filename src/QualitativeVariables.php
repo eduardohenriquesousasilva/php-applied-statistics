@@ -27,7 +27,7 @@ class QualitativeVariables extends FrequencyDistribution
 
         if (!empty($variablesOrdered)) {
             $variablesOrdered = $this->formatStringData($variablesOrdered);
-            $this->validManualDefinedVariables($variablesOrdered);
+            $this->validManualDefinedVariables($this->data, $variablesOrdered);
         }
 
         $this->sortData();
