@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\AppliedStatistics;
 
-class AppliedStatistcsTest extends TestCase
+class AppliedStatisticsTest extends TestCase
 {
     /********************************************************************************
      *
@@ -49,6 +49,18 @@ class AppliedStatistcsTest extends TestCase
         $this->assertTrue(
             property_exists($appliedStatistics, 'decimalPlaces'),
             'The decimalPlaces property doesn\'t exist in the class AppliedStatistics'
+        );
+
+        // frequencyDistribution
+        $this->assertTrue(
+            property_exists($appliedStatistics, 'frequencyDistribution'),
+            'The frequencyDistribution property doesn\'t exist in the class AppliedStatistics'
+        );
+
+        // positionMeasures
+        $this->assertTrue(
+            property_exists($appliedStatistics, 'positionMeasures'),
+            'The positionMeasures property doesn\'t exist in the class AppliedStatistics'
         );
     }
 
@@ -120,23 +132,20 @@ class AppliedStatistcsTest extends TestCase
         // Class interval doesn't defined
         $appliedStatistics->decimalPlaces = 5;
         $result = $appliedStatistics->quantitativeVariables(DataProvider::defectiveParts()['data']);
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-        $this->assertEquals(3, count($result->rows));
+        $this->assertIsArray($result);
+        $this->assertEquals(3, count($result));
 
         // Class interval doesn't defined
         $appliedStatistics->decimalPlaces = 2;
         $result = $appliedStatistics->quantitativeVariables(DataProvider::employeesSalary()['data']);
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-        $this->assertEquals(7, count($result->rows));
+        $this->assertIsArray($result);
+        $this->assertEquals(7, count($result));
 
         // Class interval defined
         $appliedStatistics->decimalPlaces = 10;
         $result = $appliedStatistics->quantitativeVariablesIntervalClass(DataProvider::employeesSalary()['data'], 130.00);
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-        $this->assertEquals(7, count($result->rows));
+        $this->assertIsArray($result);
+        $this->assertEquals(7, count($result));
     }
 
     /**
@@ -152,9 +161,8 @@ class AppliedStatistcsTest extends TestCase
         // Without ordered variables
         $appliedStatistics->decimalPlaces = 5;
         $result = $appliedStatistics->qualitativeVariables(DataProvider::civilStatusPeople()['data']);
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-        $this->assertEquals(4, count($result->rows));
+        $this->assertIsArray($result);
+        $this->assertEquals(4, count($result));
 
         // Ordered variables
         $appliedStatistics->decimalPlaces = 5;
@@ -162,8 +170,7 @@ class AppliedStatistcsTest extends TestCase
             DataProvider::civilStatusPeople()['data'],
             ['solteiro', 'casado', 'viúvo', 'separado']
         );
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-        $this->assertEquals(4, count($result->rows));
+        $this->assertIsArray($result);
+        $this->assertEquals(4, count($result));
     }
 }

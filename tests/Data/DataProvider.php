@@ -58,4 +58,173 @@ class DataProvider
             ]
         ];
     }
+
+
+
+    // Calcs of average
+    public function numberOfComputerByhouse(): array
+    {
+        return [
+            (object) [
+                'variable' => 0,
+                'frequency' => 4
+            ],
+            (object) [
+                'variable' => 1,
+                'frequency' => 19
+            ],
+            (object) [
+                'variable' => 2,
+                'frequency' => 16
+            ],
+            (object) [
+                'variable' => 3,
+                'frequency' => 9
+            ],
+            (object) [
+                'variable' => 4,
+                'frequency' => 2
+            ],
+        ];
+    }
+
+    public function numberOfLateMonthPayments(): array
+    {
+        return [
+            (object) [
+                'variable' => 1,
+                'frequency' => 12
+            ],
+            (object) [
+                'variable' => 2,
+                'frequency' => 16
+            ],
+            (object) [
+                'variable' => 3,
+                'frequency' => 21
+            ],
+            (object) [
+                'variable' => 4,
+                'frequency' => 15
+            ],
+            (object) [
+                'variable' => 5,
+                'frequency' => 13
+            ],
+            (object) [
+                'variable' => 6,
+                'frequency' => 10
+            ],
+        ];
+    }
+
+    public function passengersStatureDistribution(): array
+    {
+        return [
+            (object) [
+                'midPoint' => 153.5,
+                'frequency' => 7,
+            ],
+            (object) [
+                'midPoint' => 160.5,
+                'frequency' => 19,
+            ],
+            (object) [
+                'midPoint' => 167.5,
+                'frequency' => 25,
+            ],
+            (object) [
+                'midPoint' => 174.5,
+                'frequency' => 26,
+            ],
+            (object) [
+                'midPoint' => 181.5,
+                'frequency' => 21,
+            ],
+            (object) [
+                'midPoint' => 188.5,
+                'frequency' => 8,
+            ],
+            (object) [
+                'midPoint' => 195.5,
+                'frequency' => 3,
+            ],
+        ];
+    }
+
+
+    // modal value
+    public function salesDistributionByHomeAppliances(): array
+    {
+        return [
+            (object) [
+                'variable' => 'Fogão',
+                'frequency' => 53,
+            ],
+            (object) [
+                'variable' => 'Geladeira duplex',
+                'frequency' => 82,
+            ],
+            (object) [
+                'variable' => 'Máquina de lavar roupa',
+                'frequency' => 33,
+            ],
+            (object) [
+                'variable' => 'Tanquinho',
+                'frequency' => 26,
+            ],
+            (object) [
+                'variable' => 'Secadora',
+                'frequency' => 31,
+            ],
+        ];
+    }
+
+    public function numberCarsRentedInHundredDays(): array
+    {
+        return [
+            (object) [
+                'variable' => 25,
+                'frequency' => 5,
+            ],
+            (object) [
+                'variable' => 30,
+                'frequency' => 13,
+            ],
+            (object) [
+                'variable' => 35,
+                'frequency' => 28,
+            ],
+            (object) [
+                'variable' => 40,
+                'frequency' => 36,
+            ],
+            (object) [
+                'variable' => 45,
+                'frequency' => 18,
+            ],
+        ];
+    }
+
+
+    public function generateData($data)
+    {
+        $b = [];
+        foreach ($data as $key => $value) {
+            for ($i = 1; $i <= $value; $i++) {
+               array_push($b, $key);
+            }
+        }
+
+        for ($i = 1; $i < 100000; $i++) {
+            $currentIndex =  rand(0, count($b) - 1);
+            $newIndex =  rand(0, count($b) - 1);
+
+            $aux = $b[$currentIndex];
+            $b[$currentIndex] = $b[$newIndex];
+            $b[$newIndex] = $aux;
+        }
+
+        return $b;
+    }
 }

@@ -224,6 +224,7 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertArrayHasKey(7, $classBreaks);
 
         $expected = (object) [
+            'intervalClass' => 130.0,
             'lessLimit' => 950.0,
             'upperLimit' => 1080.0,
             'description' => "950 |-- 1080",
@@ -232,6 +233,7 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertContainsEquals($expected, $classBreaks);
 
         $expected = (object) [
+            'intervalClass' => 130.0,
             'lessLimit' => 1340.0,
             'upperLimit' => 1470.0,
             'description' => "1340 |-- 1470",
@@ -240,6 +242,7 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertContainsEquals($expected, $classBreaks);
 
         $expected = (object) [
+            'intervalClass' => 130.0,
             'lessLimit' => 1730.0,
             'upperLimit' => 1860.0,
             'description' => "1730 |-- 1860",
@@ -427,13 +430,13 @@ class QuantitativeVariablesTest extends TestCase
         $quantitativeVariables->data = DataProvider::employeesSalary()['data'];
         $quantitativeVariables->decimalPlaces = 0;
         $result = $quantitativeVariables->calculate();
-        $this->assertObjectHasAttribute('midPoint', $result->rows[6]);
+        $this->assertObjectHasAttribute('midPoint', $result[6]);
 
         $quantitativeVariables = new QuantitativeVariables();
         $quantitativeVariables->data = DataProvider::defectiveParts()['data'];
         $quantitativeVariables->decimalPlaces = 0;
         $result = $quantitativeVariables->calculate();
-        $this->assertObjectHasAttribute('variable', $result->rows[2]);
+        $this->assertObjectHasAttribute('variable', $result[2]);
     }
 
     /**
@@ -448,7 +451,7 @@ class QuantitativeVariablesTest extends TestCase
         $quantitativeVariables->data = DataProvider::defectiveParts()['data'];
         $quantitativeVariables->decimalPlaces = 0;
         $result = $quantitativeVariables->calculate(true);
-        $this->assertObjectHasAttribute('midPoint', $result->rows[0]);
+        $this->assertObjectHasAttribute('midPoint', $result[1]);
     }
 
     /**
@@ -467,6 +470,6 @@ class QuantitativeVariablesTest extends TestCase
         $this->assertEquals(130.00, $quantitativeVariables->intervalClass);
         $this->assertEquals(950.00, $quantitativeVariables->classBreaks[1]->lessLimit);
         $this->assertEquals(1080.00, $quantitativeVariables->classBreaks[1]->upperLimit);
-        $this->assertObjectHasAttribute('midPoint', $result->rows[0]);
+        $this->assertObjectHasAttribute('midPoint', $result[1]);
     }
 }

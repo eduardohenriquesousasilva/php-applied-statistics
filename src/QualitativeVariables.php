@@ -19,7 +19,7 @@ class QualitativeVariables extends FrequencyDistribution
      * @param array $variablesOrdered
      * @return StdClass
      */
-    public function calculate(array $variablesOrdered = []): StdClass
+    public function calculate(array $variablesOrdered = []): array
     {
         $this->validationRequirements(['data']);
 
@@ -39,6 +39,6 @@ class QualitativeVariables extends FrequencyDistribution
         $this->setAccumulateRelativeFrequencies();
         $this->setPercentAccumulateRelativeFrequencies();
 
-        return $this->setResults();
+        return $this->frequencies;
     }
 }

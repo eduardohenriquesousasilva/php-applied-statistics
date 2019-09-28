@@ -67,13 +67,13 @@ class QualitativeVariablesTest extends TestCase
         $qualitativeVariables = new QualitativeVariables(DataProvider::civilStatusPeople()['data']);
         $result = $qualitativeVariables->calculate();
 
-        $this->assertEquals('Casado', $result->rows[0]->variable);
-        $this->assertEquals(0.39286, $result->rows[0]->relativeFrequency);
-        $this->assertEquals(39.286, $result->rows[0]->accumulatePercentRelativeFrequency);
+        $this->assertEquals('Casado', $result['Casado']->variable);
+        $this->assertEquals(0.39286, $result['Casado']->relativeFrequency);
+        $this->assertEquals(39.286, $result['Casado']->accumulatePercentRelativeFrequency);
 
-        $this->assertEquals('Viúvo', $result->rows[3]->variable);
-        $this->assertEquals(0.07143, $result->rows[3]->relativeFrequency);
-        $this->assertEquals(100.0, $result->rows[3]->accumulatePercentRelativeFrequency);
+        $this->assertEquals('Viúvo', $result['Viúvo']->variable);
+        $this->assertEquals(0.07143, $result['Viúvo']->relativeFrequency);
+        $this->assertEquals(100.0, $result['Viúvo']->accumulatePercentRelativeFrequency);
     }
 
     /**
@@ -87,12 +87,12 @@ class QualitativeVariablesTest extends TestCase
         $qualitativeVariables = new QualitativeVariables(DataProvider::civilStatusPeople()['data']);
         $result = $qualitativeVariables->calculate(['solteiro', 'casado', 'viúvo', 'separado']);
 
-        $this->assertEquals('Casado', $result->rows[1]->variable);
-        $this->assertEquals(0.39286, $result->rows[1]->relativeFrequency);
-        $this->assertEquals(62.5, $result->rows[1]->accumulatePercentRelativeFrequency);
+        $this->assertEquals('Casado', $result['Casado']->variable);
+        $this->assertEquals(0.39286, $result['Casado']->relativeFrequency);
+        $this->assertEquals(62.5, $result['Casado']->accumulatePercentRelativeFrequency);
 
-        $this->assertEquals('Viúvo', $result->rows[2]->variable);
-        $this->assertEquals(0.07143, $result->rows[2]->relativeFrequency);
-        $this->assertEquals(69.643, $result->rows[2]->accumulatePercentRelativeFrequency);
+        $this->assertEquals('Viúvo', $result['Viúvo']->variable);
+        $this->assertEquals(0.07143, $result['Viúvo']->relativeFrequency);
+        $this->assertEquals(69.643, $result['Viúvo']->accumulatePercentRelativeFrequency);
     }
 }

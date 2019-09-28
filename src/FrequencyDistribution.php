@@ -2,9 +2,9 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
-use drdhnrq\PhpAppliedStatistics\Traits\DefaultValidations;
 use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
+use drdhnrq\PhpAppliedStatistics\Traits\DefaultValidations;
 use drdhnrq\PhpAppliedStatistics\Traits\ValidationRequirements;
 
 class FrequencyDistribution
@@ -44,22 +44,6 @@ class FrequencyDistribution
     public $frequencies;
 
     /**
-     * This property contains the totals of the frequency distribution, and
-     * will show this information as a row totalizing
-     *
-     * @var StdClass;
-     */
-    public $totals;
-
-    /**
-     * This property will contain the result of frequency distribution
-     * applied
-     *
-     * @var StdClass
-     */
-    public $result;
-
-    /**
      * All arguments are optional, but in a moment they are necessary to
      * calculate the statistics operations.
      *
@@ -70,8 +54,6 @@ class FrequencyDistribution
     {
         $this->data = $data;
         $this->frequencies = array();
-        $this->totals = new StdClass();
-        $this->result = new StdClass();
 
         $this->decimalPlaces = (is_null($decimalPlaces))
             ? self::DEFAULT_DECIMAL_PLACES
@@ -130,10 +112,14 @@ class FrequencyDistribution
     {
         $this->validationRequirements(['variables']);
 
+        $class = 1;
         foreach ($this->data as $variable) {
             if (!isset($this->frequencies[$variable]->frequency)) {
                 $this->frequencies[$variable]->frequency = 0;
+                $this->frequencies[$variable]->class = $class;
+                $class++;
             }
+
             $this->frequencies[$variable]->frequency++;
         }
 
@@ -240,61 +226,5 @@ class FrequencyDistribution
         }
 
         return $this->frequencies;
-    }
-
-    /**
-     * This method will set the totals that were got after  the calculations of
-     * frequency distribution
-     *
-     * @return StdClass
-     */
-    public function setTotals(): StdClass
-    {
-        $this->validationRequirements([
-            'accumulateRelativeFrequency',
-            'accumulatePercentRelativeFrequency'
-        ]);
-
-        $this->totals->frequency = count($this->data);
-
-        $this->totals->relativeFrequency = $this->round(
-            end($this->frequencies)->accumulateRelativeFrequency,
-            $this->decimalPlaces
-        );
-
-        $this->totals->percentRelativeFrequency = $this->round(
-            end($this->frequencies)->accumulatePercentRelativeFrequency,
-            $this->decimalPlaces
-        );
-
-        return $this->totals;
-    }
-
-    /**
-     * This methods will call the method totals to put theses
-     * values in the result with frequency distribution that
-     * was calculated, this method will format the result response
-     * and save this value in the property results in the class
-     *
-     * @return StdClass
-     */
-    public function setResults(): StdClass
-    {
-        $this->validationRequirements(['frequency']);
-
-        $this->setTotals();
-
-        $this->result = (object) [
-            'rows' => [],
-            'totals' => $this->totals
-        ];
-
-        $classNumber = 1;
-        foreach ($this->frequencies as $frequency) {
-            $frequency->class = $classNumber;
-            array_push($this->result->rows, $frequency);
-        }
-
-        return $this->result;
     }
 }

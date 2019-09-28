@@ -1,7 +1,5 @@
 <?php
 
-include __DIR__ . '../../../Data/DataProvider.php';
-
 use PHPUnit\Framework\TestCase;
 use drdhnrq\PhpAppliedStatistics\FrequencyDistribution;
 use drdhnrq\PhpAppliedStatistics\Exceptions\VariableNotDefined;
@@ -85,18 +83,6 @@ class FrequencyDistributionTest extends TestCase
             property_exists($frequencyDistribution, 'frequencies'),
             'The frequencies property doesn\'t exist in the class Frequency Distribution'
         );
-
-        // totals
-        $this->assertTrue(
-            property_exists($frequencyDistribution, 'totals'),
-            'The totals property doesn\'t exist in the class Frequency Distribution'
-        );
-
-        // result
-        $this->assertTrue(
-            property_exists($frequencyDistribution, 'result'),
-            'The results property doesn\'t exist in the class Frequency Distribution'
-        );
     }
 
     /**
@@ -154,18 +140,6 @@ class FrequencyDistributionTest extends TestCase
         $this->assertTrue(
             method_exists($frequencyDistribution, 'setPercentAccumulateRelativeFrequencies'),
             'The setPercentAccumulateRelativeFrequencies() method doesn\'t exist in the class Frequency Distribution'
-        );
-
-        // setTotals()
-        $this->assertTrue(
-            method_exists($frequencyDistribution, 'setTotals'),
-            'The setTotals() method doesn\'t exist in the class Frequency Distribution'
-        );
-
-        // setResults()
-        $this->assertTrue(
-            method_exists($frequencyDistribution, 'setResults'),
-            'The setResults() method doesn\'t exist in the class Frequency Distribution'
         );
     }
 
@@ -423,105 +397,5 @@ class FrequencyDistributionTest extends TestCase
         $frequencyDistribution->setVariablesFrequency();
         $frequencyDistribution->setFrequencies();
         $frequencyDistribution->setPercentAccumulateRelativeFrequencies();
-    }
-
-    /**
-     * This test verifies if the total was calculated when the method called and
-     *  verifies if the exception is returned when accumulate relative frequencies
-     * or accumulate percent relative frequencies didn't define
-     *
-     * @return void
-     */
-    public function testMethodSetTotals()
-    {
-        $defectiveParts = DataProvider::defectiveParts();
-        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data'], 4);
-
-        $frequencyDistribution->sortData();
-        $frequencyDistribution->setVariablesFrequency();
-        $frequencyDistribution->setFrequencies();
-        $frequencyDistribution->setRelativeFrequencies();
-        $frequencyDistribution->setPercentRelativeFrequencies();
-        $frequencyDistribution->setAccumulateFrequencies();
-        $frequencyDistribution->setAccumulateRelativeFrequencies();
-        $frequencyDistribution->setPercentAccumulateRelativeFrequencies();
-        $totals = $frequencyDistribution->setTotals();
-
-        $this->assertEquals(30, $totals->frequency);
-        $this->assertEquals(1.0001, $totals->relativeFrequency);
-        $this->assertEquals(100.01, $totals->percentRelativeFrequency);
-
-        // Expect exception when accumulate relative frequency didn't define
-        $this->expectException(AccumulateRelativeFrequency::class);
-        $defectiveParts = DataProvider::defectiveParts();
-        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
-        $frequencyDistribution->setVariablesFrequency();
-        $frequencyDistribution->setFrequencies();
-        $frequencyDistribution->setTotals();
-
-        // Expect exception when percent accumulate relative frequency didn't define
-        $this->expectException(AccumulatePercentRelativeFrequency::class);
-        $defectiveParts = DataProvider::defectiveParts();
-        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
-        $frequencyDistribution->setVariablesFrequency();
-        $frequencyDistribution->setFrequencies();
-        $frequencyDistribution->setRelativeFrequencies();
-        $frequencyDistribution->setAccumulateRelativeFrequencies();
-        $frequencyDistribution->setTotals();
-    }
-
-    /**
-     * This test verifies if the results were calculated and verifies if the
-     * exception is returned when the frequencies didn't define
-     *
-     * @return void
-     */
-    public function testMethodSetResults()
-    {
-        $defectiveParts = DataProvider::defectiveParts();
-        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
-
-        $frequencyDistribution->sortData();
-        $frequencyDistribution->setVariablesFrequency();
-        $frequencyDistribution->setFrequencies();
-        $frequencyDistribution->setRelativeFrequencies();
-        $frequencyDistribution->setPercentRelativeFrequencies();
-        $frequencyDistribution->setAccumulateFrequencies();
-        $frequencyDistribution->setAccumulateRelativeFrequencies();
-        $frequencyDistribution->setPercentAccumulateRelativeFrequencies();
-        $result = $frequencyDistribution->setResults();
-
-        $this->assertObjectHasAttribute('rows', $result);
-        $this->assertObjectHasAttribute('totals', $result);
-
-        $expected = (object) [
-            'variable' => 0,
-            'frequency' => 14,
-            'relativeFrequency' => 0.46667,
-            'percentRelativeFrequency' => 46.667,
-            'accumulateFrequency' => 14,
-            'accumulateRelativeFrequency' => 0.46667,
-            'accumulatePercentRelativeFrequency' => 46.667,
-            'class' => 1,
-        ];
-        $this->assertEquals($expected, $result->rows[0]);
-
-        $expected = (object) [
-            'variable' => 2,
-            'frequency' => 5,
-            'relativeFrequency' => 0.16667,
-            'percentRelativeFrequency' => 16.667,
-            'accumulateFrequency' => 30,
-            'accumulateRelativeFrequency' => 1.00001,
-            'accumulatePercentRelativeFrequency' => 100.001,
-            'class' => 1,
-        ];
-        $this->assertEquals($expected, $result->rows[2]);
-
-        // Expect exception when frequency didn't define
-        $this->expectException(FrequencyNotDefined::class);
-        $defectiveParts = DataProvider::defectiveParts();
-        $frequencyDistribution = new FrequencyDistribution($defectiveParts['data']);
-        $frequencyDistribution->setResults();
     }
 }

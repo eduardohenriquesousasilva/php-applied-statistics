@@ -2,7 +2,6 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
-use StdClass;
 use drdhnrq\PhpAppliedStatistics\FrequencyDistribution;
 
 class QuantitativeVariables extends FrequencyDistribution
@@ -129,6 +128,7 @@ class QuantitativeVariables extends FrequencyDistribution
             $upperLimitClass = $this->round(($lessLimitClass + $this->intervalClass), $this->decimalPlaces);
 
             $this->classBreaks[$classNumber] = (object) [
+                'intervalClass' => $this->intervalClass,
                 'lessLimit' => $lessLimitClass,
                 'upperLimit' => $upperLimitClass,
                 'description' => $lessLimitClass . ' |-- ' . $upperLimitClass,
@@ -201,6 +201,7 @@ class QuantitativeVariables extends FrequencyDistribution
 
         foreach ($this->classBreaks as $classBreack) {
             $this->frequencies[$classBreack->class]->frequency = 0;
+            $this->frequencies[$classBreack->class]->classIntervals = $classBreack;
 
             foreach ($this->data as $value) {
                 // jump values that are smaller less limit of class interval
@@ -229,9 +230,8 @@ class QuantitativeVariables extends FrequencyDistribution
      * the frequency using the class intervals or no
      *
      * @param bool|null $useClassInterval
-     * @return StdClass
      */
-    public function calculate($useClassInterval = null): StdClass
+    public function calculate($useClassInterval = null): array
     {
         $countClassForData = count(array_unique($this->data));
         // Determine if necessary use class interval or no
@@ -252,7 +252,7 @@ class QuantitativeVariables extends FrequencyDistribution
      *
      * @return StdClass
      */
-    public function calculateSimpleFrequency(): StdClass
+    public function calculateSimpleFrequency(): array
     {
         $this->sortData();
         $this->setVariablesFrequency();
@@ -263,7 +263,7 @@ class QuantitativeVariables extends FrequencyDistribution
         $this->setAccumulateRelativeFrequencies();
         $this->setPercentAccumulateRelativeFrequencies();
 
-        return $this->setResults();
+        return $this->frequencies;
     }
 
     /**
@@ -274,7 +274,7 @@ class QuantitativeVariables extends FrequencyDistribution
      * @param integer|float $intervalClass
      * @return StdClass
      */
-    public function calculateClassIntervalFrequency($intervalClass = null): StdClass
+    public function calculateClassIntervalFrequency($intervalClass = null): array
     {
         $this->sortData();
         $this->setClassNumber();
@@ -294,6 +294,6 @@ class QuantitativeVariables extends FrequencyDistribution
         $this->setAccumulateRelativeFrequencies();
         $this->setPercentAccumulateRelativeFrequencies();
 
-        return $this->setResults();
+        return $this->frequencies;
     }
 }

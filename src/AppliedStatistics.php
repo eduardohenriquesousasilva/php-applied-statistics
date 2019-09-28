@@ -2,7 +2,6 @@
 
 namespace drdhnrq\PhpAppliedStatistics;
 
-use StdClass;
 use drdhnrq\PhpAppliedStatistics\Traits\Helpers;
 
 /**
@@ -32,6 +31,20 @@ class AppliedStatistics
     public $decimalPlaces;
 
     /**
+     * Frequency distribution
+     *
+     * @var array
+     */
+    public $frequencyDistribution;
+
+    /**
+     * Position measures
+     *
+     * @var array
+     */
+    public $positionMeasures;
+
+    /**
      * @param integer $decimalPlaces
      */
     public function __construct(int $decimalPlaces = null)
@@ -49,12 +62,13 @@ class AppliedStatistics
      *
      * @param array $data
      * @param bool|null $useClassInterval
-     * @return StdClass
+     *
+     * @return array
      */
-    public function quantitativeVariables(array $data, $useClassInterval = null): StdClass
+    public function quantitativeVariables(array $data, $useClassInterval = null): array
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
-        return $quantitativeVariables->calculate($useClassInterval);
+        return $this->frequencyDistribution = $quantitativeVariables->calculate($useClassInterval);
     }
 
     /**
@@ -63,12 +77,12 @@ class AppliedStatistics
      *
      * @param array $data
      * @param bool|null $intervalClass
-     * @return StdClass
+     * @return array
      */
-    public function quantitativeVariablesIntervalClass(array $data, $intervalClass): StdClass
+    public function quantitativeVariablesIntervalClass(array $data, $intervalClass): array
     {
         $quantitativeVariables = new QuantitativeVariables($data, $this->decimalPlaces);
-        return $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
+        return $this->frequencyDistribution = $quantitativeVariables->calculateClassIntervalFrequency($intervalClass);
     }
 
     /**
@@ -77,11 +91,11 @@ class AppliedStatistics
      *
      * @param array $data
      * @param array $orderedVariables
-     * @return StdClass
+     * @return array
      */
-    public function qualitativeVariables(array $data, array $orderedVariables = []): StdClass
+    public function qualitativeVariables(array $data, array $orderedVariables = []): array
     {
         $qualitativeVariables = new QualitativeVariables($data, $this->decimalPlaces);
-        return $qualitativeVariables->calculate($orderedVariables);
+        return $this->frequencyDistribution = $qualitativeVariables->calculate($orderedVariables);
     }
 }
